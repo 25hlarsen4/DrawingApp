@@ -1,3 +1,4 @@
+
 package com.example.drawingapplication
 
 import android.os.Bundle
@@ -12,8 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.drawingapplication.ui.theme.DrawingApplicationTheme
+import com.example.drawingapplication.databinding.ActivityMainActualBinding
+
 
 class MainActivity : ComponentActivity() {
+    val binding: ActivityMainActualBinding = ActivityMainActualBinding.inflate(layoutInflater)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
