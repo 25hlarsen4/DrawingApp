@@ -1,51 +1,62 @@
 
 package com.example.drawingapplication
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.drawingapplication.ui.theme.DrawingApplicationTheme
+import android.util.Log
+import android.view.MotionEvent
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.drawingapplication.databinding.ActivityMainActualBinding
 
 
-class MainActivity : ComponentActivity() {
-    val binding: ActivityMainActualBinding = ActivityMainActualBinding.inflate(layoutInflater)
+class MainActivity : AppCompatActivity() {
+    val binding: ActivityMainActualBinding by lazy {ActivityMainActualBinding.inflate(layoutInflater)}
+    val myViewModel: DrawViewModel by viewModels()
+    private lateinit var drawView: DrawView
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            DrawingApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
+        drawView = binding.drawingCanvas
+
+        myViewModel.bm.observe(this) {
+            drawView.invalidate()
+        }
+
+        setContentView(binding.root)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        event ?: return false
+
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                myViewModel.startX = event.x
+                myViewModel.startY = event.y - 200
+            }
+            MotionEvent.ACTION_MOVE -> {
+                myViewModel.endX = event.x
+                myViewModel.endY = event.y - 200
+
+                myViewModel.draw()
+
+                myViewModel.startX = event.x
+                myViewModel.startY = event.y - 200
+            }
+            MotionEvent.ACTION_UP -> {
+                myViewModel.draw()
+
+                myViewModel.endX = event.x
+                myViewModel.endY = event.y - 200
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    DrawingApplicationTheme {
-        Greeting("Android")
+        return true
     }
 }
