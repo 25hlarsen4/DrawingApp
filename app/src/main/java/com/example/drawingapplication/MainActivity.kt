@@ -29,6 +29,16 @@ class MainActivity : AppCompatActivity() {
             drawView.invalidate()
         }
 
+        binding.penButton.setOnClickListener {
+            val penSizeFragment = PenSizeFragment()
+            penSizeFragment.show(supportFragmentManager, "pen_size_fragment")
+        }
+
+        binding.colorButton.setOnClickListener {
+            val penColorFragment = PenColorFragment()
+            penColorFragment.show(supportFragmentManager, "pen_color_fragment")
+        }
+
         setContentView(binding.root)
     }
 
