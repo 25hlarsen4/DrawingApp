@@ -1,6 +1,8 @@
 
 package com.example.drawingapplication
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -24,12 +26,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         drawView = binding.drawingCanvas
+        myViewModel.changeScreenDimensionsInitial(drawView.width, drawView.height)
 
         myViewModel.bm.observe(this) {
             drawView.invalidate()
         }
 
         setContentView(binding.root)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            myViewModel.changeScreenDimensions(drawView.height, drawView.width)
+        }
+        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
+        {
+            myViewModel.changeScreenDimensions(drawView.width, drawView.height)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -51,10 +66,10 @@ class MainActivity : AppCompatActivity() {
                 myViewModel.startY = event.y - 200
             }
             MotionEvent.ACTION_UP -> {
-                myViewModel.draw()
 
                 myViewModel.endX = event.x
                 myViewModel.endY = event.y - 200
+                myViewModel.draw()
             }
         }
         return true
