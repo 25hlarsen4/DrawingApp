@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MyApp.Splash" parent="Theme.SplashScreen">
+<!--        <item name="windowSplashScreenBackground">@color/white</item> &lt;!&ndash; Optional background &ndash;&gt;-->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/pencil</item>
+<!--        <item name="windowSplashScreenIconSize">80dp</item>&lt;!&ndash; Your animated icon &ndash;&gt;-->
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.AppCompat.Light</item> <!-- Background for icon -->
+    </style>
+
+</resources>
