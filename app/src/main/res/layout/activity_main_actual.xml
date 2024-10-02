@@ -18,10 +18,12 @@
         android:layout_gravity="bottom">
         <ImageButton
             android:id="@+id/pen_button"
+            android:src="@drawable/pencil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <ImageButton
             android:id="@+id/color_button"
+            android:src="@drawable/colorwheel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
