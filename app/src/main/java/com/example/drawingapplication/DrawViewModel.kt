@@ -17,29 +17,35 @@ import androidx.lifecycle.ViewModel
 import kotlin.random.Random
 
 class DrawViewModel : ViewModel() {
-    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
-    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
+    // Bitmap is initialized with a width of 1 and height of 1 to not crash program
+    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
     var bitmapCanvas = Canvas(bitmap.value!!)
 
+    // Drawing variables
     var startX = 50f
     var startY = 50f
     var endX = 50f
     var endY  = 50f
     var paint = Paint()
+
+    // Screen Dimensions
     var screenWidth = 1200
     var screenHeight = 2400
+
+    // First run
     var first = true
     var isPortrait = false
     var change = false
 
+    // LiveData
     var bm = bitmap as LiveData<Bitmap>
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun draw() {
+        // Get bitmap
         val currentBitmap = bitmap.value!!
         val canvas = Canvas(currentBitmap)
-
+        
         paint.color = Color.BLACK
         paint.strokeWidth = 8f
 
@@ -47,19 +53,6 @@ class DrawViewModel : ViewModel() {
 
         // Notify observers about the updated bitmap
         bitmap.value = currentBitmap
-    }
-
-    fun changeScreenDimensionsInitial(width: Int, height: Int){
-        if (width <= 0 || height <= 0)
-            return
-
-        screenWidth = width
-        screenHeight = height
-
-        bitmap.value = Bitmap.createScaledBitmap(bm.value!!, screenWidth, screenHeight, false)
-        val currentBitmap = bitmap.value!!
-        bitmap.value = currentBitmap
-        Log.d("WHAT1", bitmap.value!!.width.toString() + " " + bitmap.value!!.height.toString() + " " + isPortrait.toString())
     }
 
     fun changeScreenDimensions(width: Int, height: Int){
@@ -98,7 +91,5 @@ class DrawViewModel : ViewModel() {
 
         change = false
         bitmap.value  = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), m, true)
-        Log.d("WHAT124214", screenWidth.toString() + " " + screenHeight.toString() + " " + isPortrait.toString())
-        Log.d("WHAT2", bitmap.value!!.width.toString() + " " + bitmap.value!!.height.toString() + " " + isPortrait.toString())
     }
 }

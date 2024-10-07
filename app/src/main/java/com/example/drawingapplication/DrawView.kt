@@ -16,26 +16,20 @@ import androidx.activity.viewModels
 import com.example.drawingapplication.MainActivity
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+    // Get MainActivity's viewmodel from context
     val myViewModel = (context as MainActivity).myViewModel
-    //width/height are 0 when the constructor is called
-    //use the lazy delegated property to initialize it on first access, once the size is set
-    private val rect: Rect by lazy {Rect(0,0,width, height)}
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        // When called update the canvas bitmap
         canvas.drawBitmap(myViewModel.bm.value!!, 0f, 0f, null)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        if (w < h) {
-            myViewModel.changeScreenDimensions(w, h)
-            Log.d("Screen", w.toString() + h.toString())
-        }
-        else {
-            myViewModel.changeScreenDimensions(w, h)
-            Log.d("Screen", w.toString() + h.toString())
-        }
+        // If the canvas size is changed then a screen rotation has happened
+        myViewModel.changeScreenDimensions(w, h)
+
     }
 
 }
