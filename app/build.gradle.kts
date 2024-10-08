@@ -57,6 +57,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.yukuku.ambilwarna)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.core.ktx)

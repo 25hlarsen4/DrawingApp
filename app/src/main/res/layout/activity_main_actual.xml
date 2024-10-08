@@ -26,17 +26,25 @@
 
         <ImageButton
             android:id="@+id/pen_button"
-            android:layout_width="42dp"
-            android:layout_height="52dp" />
+            android:layout_width="75dp"
+            android:layout_height="60dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/pensize"
+            tools:src="@drawable/pencil" />
 
         <ImageButton
             android:id="@+id/color_button"
-            android:layout_width="43dp"
-            android:layout_height="52dp" />
+            android:layout_width="75dp"
+            android:layout_height="60dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/color" />
+
         <ImageButton
             android:id="@+id/shape_button"
-            android:layout_width="43dp"
-            android:layout_height="52dp" />
+            android:layout_width="75dp"
+            android:layout_height="60dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/circle" />
 
     </LinearLayout>
 </FrameLayout>

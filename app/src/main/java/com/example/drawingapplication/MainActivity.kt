@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.drawingapplication.databinding.ActivityMainActualBinding
 import yuku.ambilwarna.AmbilWarnaDialog
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
 
         drawView = binding.drawingCanvas
 
