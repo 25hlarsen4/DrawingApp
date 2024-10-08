@@ -1,6 +1,8 @@
 [versions]
+ambilwarnaVersion = "2.0.1"
 fragmentKtx = "1.8.3"
 agp = "8.5.2"
+githubAmbilwarna = "2.0.1"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -35,6 +37,8 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+yuku-ambilwarna = { module = "yuku.ambilwarna:ambilwarna", version.ref = "ambilwarnaVersion" }
+yukuku-ambilwarna = { module = "com.github.yukuku:ambilwarna", version.ref = "githubAmbilwarna" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

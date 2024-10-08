@@ -9,9 +9,12 @@ import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.drawingapplication.databinding.ActivityMainActualBinding
+import yuku.ambilwarna.AmbilWarnaDialog
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,8 +38,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.colorButton.setOnClickListener {
-            val penColorFragment = PenColorFragment()
-            penColorFragment.show(supportFragmentManager, "pen_color_fragment")
+            val colorPicker = AmbilWarnaDialog(
+                this,
+                myViewModel.getColor(),
+                object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                    override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
+                        // Action when OK is pressed (color selected)
+                        myViewModel.updateColor(color)
+                    }
+
+                    override fun onCancel(dialog: AmbilWarnaDialog) {
+                        // Needs to be here, otherwise error, but functionally serves
+                        //no purpose for our app
+                    }
+                })
+            // Show the color picker dialog
+            colorPicker.show()
         }
 
         setContentView(binding.root)

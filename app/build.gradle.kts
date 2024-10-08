@@ -57,6 +57,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.yukuku.ambilwarna)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

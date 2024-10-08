@@ -51,4 +51,9 @@ class DrawViewModel : ViewModel() {
     fun updateColor(newColor: Int) {
         colorVal = newColor
     }
+
+    fun getColor(): Int {
+        return colorVal
+    }
+
 }
