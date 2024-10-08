@@ -59,6 +59,11 @@ class MainActivity : AppCompatActivity() {
             colorPicker.show()
         }
 
+        binding.shapeButton.setOnClickListener {
+            val penShapeFragment = PenShapeFragment()
+            penShapeFragment.show(supportFragmentManager, "pen_shape_fragment")
+        }
+
         setContentView(binding.root)
     }
 

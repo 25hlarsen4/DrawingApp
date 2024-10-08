@@ -26,6 +26,7 @@ class DrawViewModel : ViewModel() {
     var paint = Paint()
     var strokeSize = 8
     var colorVal = Color.BLACK
+    var shape = false
 
     val bm = bitmap as LiveData<Bitmap>
 
@@ -38,7 +39,12 @@ class DrawViewModel : ViewModel() {
         paint.color = colorVal
         paint.strokeWidth = strokeSize.toFloat()
 
-        canvas.drawLine(startX, startY, endX, endY, paint)
+        if (shape) {
+            canvas.drawCircle(startX, startY, strokeSize.toFloat(), paint)
+        }else{
+            canvas.drawLine(startX, startY, endX, endY, paint)
+        }
+
 
         // Notify observers about the updated bitmap
         bitmap.value = currentBitmap
@@ -54,6 +60,14 @@ class DrawViewModel : ViewModel() {
 
     fun getColor(): Int {
         return colorVal
+    }
+
+    fun setShape(circOrSquare: String) {
+        if(circOrSquare == "circle"){
+            shape = true
+        }else{
+            shape = false
+        }
     }
 
 }
