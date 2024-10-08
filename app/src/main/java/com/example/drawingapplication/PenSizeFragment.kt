@@ -26,6 +26,8 @@ class PenSizeFragment : DialogFragment() {
         binding =  FragmentPenSizeBinding.inflate(inflater, container, false)
         val myViewModel : DrawViewModel by activityViewModels()
 
+        binding.penSizeSeekbar.progress = myViewModel.strokeSize
+
         binding.penSizeSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 // Update pen size in your drawing view

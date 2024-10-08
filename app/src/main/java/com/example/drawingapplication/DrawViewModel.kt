@@ -24,7 +24,7 @@ class DrawViewModel : ViewModel() {
     var endX = 50f
     var endY  = 50f
     var paint = Paint()
-    var strokeSize = 8f
+    var strokeSize = 8
     var colorVal = Color.BLACK
 
     val bm = bitmap as LiveData<Bitmap>
@@ -36,7 +36,7 @@ class DrawViewModel : ViewModel() {
         val canvas = Canvas(currentBitmap)
 
         paint.color = colorVal
-        paint.strokeWidth = strokeSize
+        paint.strokeWidth = strokeSize.toFloat()
 
         canvas.drawLine(startX, startY, endX, endY, paint)
 
@@ -45,7 +45,7 @@ class DrawViewModel : ViewModel() {
     }
 
     fun updatePenSize(newSize: Int) {
-        strokeSize = newSize.toFloat()
+        strokeSize = newSize
     }
 
     fun updateColor(newColor: Int) {
