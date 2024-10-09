@@ -5,16 +5,11 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.Rect
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.createBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlin.random.Random
 
 class DrawViewModel : ViewModel() {
     // Bitmap is initialized with a width of 1 and height of 1 to not crash program
@@ -45,7 +40,7 @@ class DrawViewModel : ViewModel() {
         // Get bitmap
         val currentBitmap = bitmap.value!!
         val canvas = Canvas(currentBitmap)
-        
+
         paint.color = Color.BLACK
         paint.strokeWidth = 8f
 
