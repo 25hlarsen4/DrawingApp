@@ -1,4 +1,3 @@
-
 package com.example.drawingapplication
 
 import android.graphics.Color
