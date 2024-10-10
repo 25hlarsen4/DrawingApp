@@ -27,10 +27,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Getting rid of title and action bar
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
-        supportActionBar!!.hide()
+//        // Getting rid of title and action bar
+//        requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+//        supportActionBar!!.hide()
 
         installSplashScreen()
 
@@ -84,24 +84,24 @@ class MainActivity : AppCompatActivity() {
             // If the user presses click then record initial position
             MotionEvent.ACTION_DOWN -> {
                 myViewModel.startX = event.x
-                myViewModel.startY = event.y - 60
+                myViewModel.startY = event.y - 200
             }
             // If the user moves the mouse while clicked then record it as the end position then draw.
             // After drawing record position in case user moves cursor again.
             MotionEvent.ACTION_MOVE -> {
                 myViewModel.endX = event.x
-                myViewModel.endY = event.y - 60
+                myViewModel.endY = event.y - 200
 
                 myViewModel.draw()
 
                 myViewModel.startX = event.x
-                myViewModel.startY = event.y - 60
+                myViewModel.startY = event.y - 200
             }
             // If the user lets go of click then record position then draw.
             MotionEvent.ACTION_UP -> {
 
                 myViewModel.endX = event.x
-                myViewModel.endY = event.y - 60
+                myViewModel.endY = event.y - 200
                 myViewModel.draw()
             }
         }

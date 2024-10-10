@@ -12,9 +12,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class DrawViewModel : ViewModel() {
-    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
-    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
-    val bitmapCanvas = Canvas(bitmap.value!!)
+//    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
+//    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
+// Bitmap is initialized with a width of 1 and height of 1 to not crash program
+    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+//    val bitmapCanvas = Canvas(bitmap.value!!)
 
     // Drawing variables
     var startX = 50f
