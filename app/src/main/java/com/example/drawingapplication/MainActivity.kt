@@ -1,4 +1,3 @@
-
 package com.example.drawingapplication
 
 import android.os.Build
@@ -9,7 +8,14 @@ import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.commit
+import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.drawingapplication.databinding.ActivityMainActualBinding
+import yuku.ambilwarna.AmbilWarnaDialog
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,10 +26,13 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         // Getting rid of title and action bar
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         supportActionBar!!.hide()
+
+        installSplashScreen()
 
         // Getting the draw view
         drawView = binding.drawingCanvas
@@ -31,6 +40,35 @@ class MainActivity : AppCompatActivity() {
         // Observing drawView for changes
         myViewModel.bm.observe(this) {
             drawView.invalidate()
+        }
+
+        binding.penButton.setOnClickListener {
+            val penSizeFragment = PenSizeFragment()
+            penSizeFragment.show(supportFragmentManager, "pen_size_fragment")
+        }
+
+        binding.colorButton.setOnClickListener {
+            val colorPicker = AmbilWarnaDialog(
+                this,
+                myViewModel.getColor(),
+                object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                    override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
+                        // Action when OK is pressed (color selected)
+                        myViewModel.updateColor(color)
+                    }
+
+                    override fun onCancel(dialog: AmbilWarnaDialog) {
+                        // Needs to be here, otherwise error, but functionally serves
+                        //no purpose for our app
+                    }
+                })
+            // Show the color picker dialog
+            colorPicker.show()
+        }
+
+        binding.shapeButton.setOnClickListener {
+            val penShapeFragment = PenShapeFragment()
+            penShapeFragment.show(supportFragmentManager, "pen_shape_fragment")
         }
 
         setContentView(binding.root)

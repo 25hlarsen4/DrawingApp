@@ -12,9 +12,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class DrawViewModel : ViewModel() {
-    // Bitmap is initialized with a width of 1 and height of 1 to not crash program
-    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
-    var bitmapCanvas = Canvas(bitmap.value!!)
+    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
+    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
+    val bitmapCanvas = Canvas(bitmap.value!!)
 
     // Drawing variables
     var startX = 50f
@@ -22,6 +22,9 @@ class DrawViewModel : ViewModel() {
     var endX = 50f
     var endY  = 50f
     var paint = Paint()
+    var strokeSize = 8
+    var colorVal = Color.BLACK
+    var shape = false
 
     // Screen Dimensions
     var screenWidth = 1200
@@ -41,14 +44,20 @@ class DrawViewModel : ViewModel() {
         val currentBitmap = bitmap.value!!
         val canvas = Canvas(currentBitmap)
 
-        paint.color = Color.BLACK
-        paint.strokeWidth = 8f
+        paint.color = colorVal
+        paint.strokeWidth = strokeSize.toFloat()
 
-        canvas.drawLine(startX, startY, endX, endY, paint)
+        if (shape) {
+            canvas.drawCircle(startX, startY, strokeSize.toFloat(), paint)
+        }else{
+            canvas.drawLine(startX, startY, endX, endY, paint)
+        }
+
 
         // Notify observers about the updated bitmap
         bitmap.value = currentBitmap
     }
+
 
     fun changeScreenDimensions(width: Int, height: Int){
         if (width <= 0 || height <= 0)
@@ -87,4 +96,26 @@ class DrawViewModel : ViewModel() {
         change = false
         bitmap.value  = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), m, true)
     }
+
+    fun updatePenSize(newSize: Int) {
+        strokeSize = newSize
+    }
+
+    fun updateColor(newColor: Int) {
+        colorVal = newColor
+    }
+
+    fun getColor(): Int {
+        return colorVal
+    }
+
+    fun setShape(circOrSquare: String) {
+        if(circOrSquare == "circle"){
+            shape = true
+        }else{
+            shape = false
+        }
+    }
+
+
 }
