@@ -1,14 +1,7 @@
 package com.example.drawingapplication
 
-//import org.junit.Assert.assertEquals
-//import org.junit.Test
-import android.content.pm.ActivityInfo
+
 import androidx.test.core.app.launchActivity
-//import androidx.test.espresso.ViewAction
-//import androidx.test.espresso.action.CoordinatesProvider
-//import androidx.test.espresso.action.GeneralClickAction
-//import androidx.test.espresso.action.Press
-//import androidx.test.espresso.action.Tap
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -17,8 +10,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-//import androidx.test.espresso.Espresso.onView
-//import androidx.test.espresso.matcher.ViewMatchers.withId
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest

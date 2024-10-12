@@ -3,15 +3,9 @@ package com.example.drawingapplication
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.Window
-import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.fragment.app.commit
-import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.drawingapplication.databinding.ActivityMainActualBinding
 import yuku.ambilwarna.AmbilWarnaDialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -43,6 +37,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.colorButton.setOnClickListener {
+            //found it wasn't possible to have this open a pop up where we have the below code,
+            // so rather than have it in a fragment dialog, we have to call it here
+            // Otherwise, we end up with two dialogs popping up and you have to click once to even
+            // access the color picker (BAD UI)
             val colorPicker = AmbilWarnaDialog(
                 this,
                 myViewModel.getColor(),
@@ -65,7 +63,6 @@ class MainActivity : AppCompatActivity() {
             val penShapeFragment = PenShapeFragment()
             penShapeFragment.show(supportFragmentManager, "pen_shape_fragment")
         }
-
         setContentView(binding.root)
     }
 
