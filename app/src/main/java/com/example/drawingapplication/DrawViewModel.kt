@@ -6,12 +6,15 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import kotlin.js.ExperimentalJsFileName
 
-class DrawViewModel : ViewModel() {
+class DrawViewModel(private val repository: FileRepository) : ViewModel() {
 //    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
 //    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
 // Bitmap is initialized with a width of 1 and height of 1 to not crash program
@@ -119,5 +122,23 @@ class DrawViewModel : ViewModel() {
         }
     }
 
+    val allFiles: LiveData<List<FileData>> = repository.allFiles
 
+    fun addFile(fileName: String){
+        Log.e("VM", "adding file $fileName")
+        repository.addFile(fileName)
+    }
+
+}
+
+// This factory class allows us to define custom constructors for the view model
+
+class WeatherViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(DrawViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return DrawViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }
