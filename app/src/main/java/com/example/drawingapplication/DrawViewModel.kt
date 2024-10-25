@@ -1,6 +1,8 @@
 package com.example.drawingapplication
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
@@ -13,6 +15,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import kotlin.js.ExperimentalJsFileName
+import android.os.Environment
+import java.io.File
+import java.io.FileOutputStream
 
 class DrawViewModel(private val repository: FileRepository) : ViewModel() {
 //    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
@@ -129,11 +134,44 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
         repository.addFile(fileName)
     }
 
+    fun saveFile(bitmap: Bitmap, fileName: String) {
+        // Ensure external storage is available for writing
+        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+
+        // Create the file object
+        val file = File(storageDir, "$fileName.png")
+        addFile(fileName)
+        try {
+            // Open the output stream
+            val outputStream = FileOutputStream(file)
+
+            // Compress the bitmap and write it to the output stream
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+
+            // Close the output stream
+            outputStream.flush()
+            outputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun loadFile(filename: String, context: Context): Bitmap? {
+        val file = File(context.getExternalFilesDir(null), filename)
+
+        return if (file.exists()) {
+            BitmapFactory.decodeFile(file.absolutePath)
+        } else {
+            null // Handle file not found case
+        }
+    }
+
+
 }
 
 // This factory class allows us to define custom constructors for the view model
 
-class WeatherViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
+class DrawViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DrawViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
