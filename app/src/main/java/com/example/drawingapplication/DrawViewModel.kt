@@ -134,37 +134,37 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
         repository.addFile(fileName)
     }
 
-    fun saveFile(bitmap: Bitmap, fileName: String) {
-        // Ensure external storage is available for writing
-        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-
-        // Create the file object
-        val file = File(storageDir, "$fileName.png")
-        addFile(fileName)
-        try {
-            // Open the output stream
-            val outputStream = FileOutputStream(file)
-
-            // Compress the bitmap and write it to the output stream
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-
-            // Close the output stream
-            outputStream.flush()
-            outputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun loadFile(filename: String, context: Context): Bitmap? {
-        val file = File(context.getExternalFilesDir(null), filename)
-
-        return if (file.exists()) {
-            BitmapFactory.decodeFile(file.absolutePath)
-        } else {
-            null // Handle file not found case
-        }
-    }
+//    fun saveFile(bitmap: Bitmap, fileName: String) {
+//        // Ensure external storage is available for writing
+//        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+//
+//        // Create the file object
+//        val file = File(storageDir, "$fileName.png")
+//        addFile(fileName)
+//        try {
+//            // Open the output stream
+//            val outputStream = FileOutputStream(file)
+//
+//            // Compress the bitmap and write it to the output stream
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+//
+//            // Close the output stream
+//            outputStream.flush()
+//            outputStream.close()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//    }
+//
+//    fun loadFile(filename: String, context: Context): Bitmap? {
+//        val file = File(context.getExternalFilesDir(null), filename)
+//
+//        return if (file.exists()) {
+//            BitmapFactory.decodeFile(file.absolutePath)
+//        } else {
+//            null // Handle file not found case
+//        }
+//    }
 
 
 }
