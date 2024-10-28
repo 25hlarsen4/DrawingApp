@@ -19,7 +19,10 @@ import android.os.Environment
 import java.io.File
 import java.io.FileOutputStream
 
-class DrawViewModel(private val repository: FileRepository) : ViewModel() {
+// Ayden's Repository creation for view model replace with one below if not working because of database.
+// If this is active then uncomment allfiles savefiles and DrawViewModelFactory below
+//class DrawViewModel(private val repository: FileRepository) : ViewModel() {
+class DrawViewModel() : ViewModel() {
 //    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
 //    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
 // Bitmap is initialized with a width of 1 and height of 1 to not crash program
@@ -68,42 +71,17 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
         bitmap.value = currentBitmap
     }
 
-
     fun changeScreenDimensions(width: Int, height: Int){
         if (width <= 0 || height <= 0)
             return
         screenWidth = width
         screenHeight = height
 
-        if (first) {
-            if (width < height)
-            {
-                isPortrait = true
-            }
-            first = false
-        }
-
         var m = Matrix()
         m.postRotate(0f)
-        if (width > height && isPortrait == true && !first)
-        {
-            m.postRotate(-90f)
-            change = true
-            isPortrait = false
-        }
-        else if (height > width && isPortrait == false && !first)
-        {
-            m.postRotate(90f)
-            change = true
-            isPortrait = true
-        }
+
         val currentBitmap = bitmap.value!!
         var scaledBitmap =  Bitmap.createScaledBitmap(currentBitmap, screenWidth, screenHeight, false)
-        if (change) {
-            scaledBitmap = Bitmap.createScaledBitmap(currentBitmap, screenHeight, screenWidth, false)
-        }
-
-        change = false
         bitmap.value  = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), m, true)
     }
 
@@ -127,12 +105,12 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
         }
     }
 
-    val allFiles: LiveData<List<FileData>> = repository.allFiles
-
-    fun addFile(fileName: String){
-        Log.e("VM", "adding file $fileName")
-        repository.addFile(fileName)
-    }
+//    val allFiles: LiveData<List<FileData>> = repository.allFiles
+//
+//    fun addFile(fileName: String){
+//        Log.e("VM", "adding file $fileName")
+//        repository.addFile(fileName)
+//    }
 
 //    fun saveFile(bitmap: Bitmap, fileName: String) {
 //        // Ensure external storage is available for writing
@@ -171,12 +149,12 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
 
 // This factory class allows us to define custom constructors for the view model
 
-class DrawViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DrawViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return DrawViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
+//class DrawViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(DrawViewModel::class.java)) {
+//            @Suppress("UNCHECKED_CAST")
+//            return DrawViewModel(repository) as T
+//        }
+//        throw IllegalArgumentException("Unknown ViewModel class")
+//    }
+//}
