@@ -8,7 +8,7 @@ import java.util.Date
 
 //apparently Room can't handle Date objects directly...
 //Room will use these converters when going from DB <-> Kotlin
-class Converters {
+class TimeConverters {
     @TypeConverter
     fun fromTimestamp(value: Long?): Date? {
         return value?.let { Date(it) }

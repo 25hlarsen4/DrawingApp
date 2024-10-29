@@ -20,7 +20,9 @@ import androidx.compose.ui.Modifier
 
 class MainActivity : AppCompatActivity() {
     val binding: ActivityMainActualBinding by lazy {ActivityMainActualBinding.inflate(layoutInflater)}
-    val myViewModel: DrawViewModel by viewModels()
+    val myViewModel: DrawViewModel by viewModels{
+        DrawViewModelFactory((application as FileApplication).fileRepository)}
+
     private lateinit var drawView: DrawView
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                DrawViewListScreen()
+                DrawViewListScreen(drawViewListViewModel = myViewModel)
             }
         }
 

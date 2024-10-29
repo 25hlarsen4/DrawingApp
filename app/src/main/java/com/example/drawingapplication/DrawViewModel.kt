@@ -14,7 +14,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import kotlin.js.ExperimentalJsFileName
 import android.os.Environment
 import java.io.File
 import java.io.FileOutputStream
@@ -25,7 +24,7 @@ private fun getDrawViewObjects() = List(1) {i -> DrawViewObject(i, "hi.txt", Bit
 // Ayden's Repository creation for view model replace with one below if not working because of database.
 // If this is active then uncomment allfiles savefiles and DrawViewModelFactory below
 //class DrawViewModel(private val repository: FileRepository) : ViewModel() {
-class DrawViewModel() : ViewModel() {
+class DrawViewModel(private val repository: FileRepository) : ViewModel() {
 //    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
 //    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
 // Bitmap is initialized with a width of 1 and height of 1 to not crash program
@@ -117,56 +116,56 @@ class DrawViewModel() : ViewModel() {
         }
     }
 
-//    val allFiles: LiveData<List<FileData>> = repository.allFiles
-//
-//    fun addFile(fileName: String){
-//        Log.e("VM", "adding file $fileName")
-//        repository.addFile(fileName)
-//    }
+    val allFiles: LiveData<List<FileData>> = repository.allFiles
 
-//    fun saveFile(bitmap: Bitmap, fileName: String) {
-//        // Ensure external storage is available for writing
-//        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-//
-//        // Create the file object
-//        val file = File(storageDir, "$fileName.png")
-//        addFile(fileName)
-//        try {
-//            // Open the output stream
-//            val outputStream = FileOutputStream(file)
-//
-//            // Compress the bitmap and write it to the output stream
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-//
-//            // Close the output stream
-//            outputStream.flush()
-//            outputStream.close()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//    }
-//
-//    fun loadFile(filename: String, context: Context): Bitmap? {
-//        val file = File(context.getExternalFilesDir(null), filename)
-//
-//        return if (file.exists()) {
-//            BitmapFactory.decodeFile(file.absolutePath)
-//        } else {
-//            null // Handle file not found case
-//        }
-//    }
+    fun addFile(fileName: String){
+        Log.e("VM", "adding file $fileName")
+        repository.addFile(fileName)
+    }
+
+    fun saveFile(bitmap: Bitmap, fileName: String) {
+        // Ensure external storage is available for writing
+        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+
+        // Create the file object
+        val file = File(storageDir, "$fileName.png")
+        addFile(fileName)
+        try {
+            // Open the output stream
+            val outputStream = FileOutputStream(file)
+
+            // Compress the bitmap and write it to the output stream
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+
+            // Close the output stream
+            outputStream.flush()
+            outputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun loadFile(filename: String, context: Context): Bitmap? {
+        val file = File(context.getExternalFilesDir(null), filename)
+
+        return if (file.exists()) {
+            BitmapFactory.decodeFile(file.absolutePath)
+        } else {
+            null // Handle file not found case
+        }
+    }
 
 
 }
 
 // This factory class allows us to define custom constructors for the view model
 
-//class DrawViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(DrawViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return DrawViewModel(repository) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//}
+class DrawViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(DrawViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return DrawViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}

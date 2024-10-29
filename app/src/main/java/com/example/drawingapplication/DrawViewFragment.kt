@@ -19,7 +19,8 @@ class DrawViewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding =  FragmentDrawViewBinding.inflate(inflater, container, false)
-        val myViewModel : DrawViewModel by activityViewModels()
+        val myViewModel: DrawViewModel by activityViewModels{
+            DrawViewModelFactory((requireActivity().application as FileApplication).fileRepository)}
 
         // Getting the draw view
         val drawView = binding.drawingCanvas
