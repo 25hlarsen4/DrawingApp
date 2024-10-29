@@ -18,6 +18,9 @@ import kotlin.js.ExperimentalJsFileName
 import android.os.Environment
 import java.io.File
 import java.io.FileOutputStream
+import androidx.compose.runtime.toMutableStateList
+
+private fun getDrawViewObjects() = List(1) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
 
 // Ayden's Repository creation for view model replace with one below if not working because of database.
 // If this is active then uncomment allfiles savefiles and DrawViewModelFactory below
@@ -28,6 +31,11 @@ class DrawViewModel() : ViewModel() {
 // Bitmap is initialized with a width of 1 and height of 1 to not crash program
     var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
 //    val bitmapCanvas = Canvas(bitmap.value!!)
+
+    // Compose variables
+    private val _DrawViewObjects = getDrawViewObjects().toMutableStateList()
+    val DrawViewObjects: List<DrawViewObject>
+        get() = _DrawViewObjects
 
     // Drawing variables
     var startX = 50f
@@ -50,6 +58,10 @@ class DrawViewModel() : ViewModel() {
 
     // LiveData
     var bm = bitmap as LiveData<Bitmap>
+
+    fun select(item: DrawViewObject) {
+        bitmap.value = item.bitmap
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun draw() {
