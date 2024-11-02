@@ -37,7 +37,8 @@ class MainActivity : AppCompatActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                DrawViewListScreen(drawViewListViewModel = myViewModel)
+//                DrawViewListScreen(drawViewListViewModel = myViewModel)
+                DrawCanvas(myViewModel)
             }
         }
 

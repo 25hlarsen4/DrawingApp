@@ -19,7 +19,8 @@ import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.runtime.toMutableStateList
 
-private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
+
+private fun getDrawViewObjects() = List(1) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
 
 // Ayden's Repository creation for view model replace with one below if not working because of database.
 // If this is active then uncomment allfiles savefiles and DrawViewModelFactory below
@@ -28,8 +29,10 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 //    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
 //    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
 // Bitmap is initialized with a width of 1 and height of 1 to not crash program
-    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+//    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
 //    val bitmapCanvas = Canvas(bitmap.value!!)
+    private val _bitmap = MutableLiveData<Bitmap>()
+    val bitmap: LiveData<Bitmap> get() = _bitmap
 
     // Compose variables
     private val _DrawViewObjects = getDrawViewObjects().toMutableStateList()
@@ -56,11 +59,13 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
     var change = false
 
     // LiveData
-    var bm = bitmap as LiveData<Bitmap>
+//    var bm = bitmap as LiveData<Bitmap>
 
     val allFiles: LiveData<List<FileData>> = repository.allFiles
 
     init {
+        _bitmap.value = Bitmap.createBitmap(screenWidth, screenWidth, Bitmap.Config.ARGB_8888)
+
         allFiles.observeForever { files ->
             files?.let {
                 val drawViewObjectList = mutableListOf<DrawViewObject>()
@@ -76,28 +81,45 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 
     fun select(item: DrawViewObject) {
         Log.d("Selected", item.fileName.toString())
-        bitmap.value = item.bitmap
+        _bitmap.value = item.bitmap
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun draw() {
-        // Get bitmap
-        val currentBitmap = bitmap.value!!
-        val canvas = Canvas(currentBitmap)
+    fun draw(currentX: Float, currentY: Float) {
+        val currentBitmap = bitmap.value!!.copy(Bitmap.Config.ARGB_8888, true)
+        val canvas = android.graphics.Canvas(currentBitmap)
 
         paint.color = colorVal
         paint.strokeWidth = strokeSize.toFloat()
 
-        if (shape) {
-            canvas.drawCircle(startX, startY, strokeSize.toFloat(), paint)
-        }else{
-            canvas.drawLine(startX, startY, endX, endY, paint)
-        }
+        // Draw line from the last position to the current position
+        canvas.drawLine(startX, startY, currentX, currentY, paint)
 
+        // Update start position for the next draw
+        startX = currentX
+        startY = currentY
 
-        // Notify observers about the updated bitmap
-        bitmap.value = currentBitmap
+        _bitmap.value = currentBitmap
     }
+
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    fun draw() {
+//        // Get bitmap
+//        val currentBitmap = bitmap.value!!
+//        val canvas = Canvas(currentBitmap)
+//
+//        paint.color = colorVal
+//        paint.strokeWidth = strokeSize.toFloat()
+//
+//        if (shape) {
+//            canvas.drawCircle(startX, startY, strokeSize.toFloat(), paint)
+//        }else{
+//            canvas.drawLine(startX, startY, endX, endY, paint)
+//        }
+//
+//
+//        // Notify observers about the updated bitmap
+//        bitmap.value = currentBitmap
+//    }
 
     fun changeScreenDimensions(width: Int, height: Int){
         if (width <= 0 || height <= 0)
@@ -110,7 +132,7 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 
         val currentBitmap = bitmap.value!!
         var scaledBitmap =  Bitmap.createScaledBitmap(currentBitmap, screenWidth, screenHeight, false)
-        bitmap.value  = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), m, true)
+        _bitmap.value  = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), m, true)
     }
 
     fun updatePenSize(newSize: Int) {
