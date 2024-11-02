@@ -9,6 +9,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.ui.graphics.asImageBitmap
@@ -22,25 +26,31 @@ fun DrawViewItem(
     picture: Bitmap,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier, verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 16.dp),
-            text = fileName
-        )
-        Image(
-            bitmap = picture.asImageBitmap(),
-            contentDescription = "Current picture of Drawing",
-            modifier = Modifier.size(128.dp)
-        )
-        Button(
-            modifier = Modifier
-            .weight(1f)
-            .padding(start = 16.dp),
-            onClick = onSelected)
-        { Text(text = "Select")}
+        Row(
+            modifier = modifier, verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp),
+                text = fileName
+            )
+            Image(
+                bitmap = picture.asImageBitmap(),
+                contentDescription = "Current picture of Drawing",
+                modifier = Modifier.size(128.dp)
+            )
+            Button(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp),
+                onClick = onSelected
+            )
+            { Text(text = "Select") }
+        }
     }
 }

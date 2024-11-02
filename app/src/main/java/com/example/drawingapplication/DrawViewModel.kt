@@ -75,6 +75,7 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 
 
     fun select(item: DrawViewObject) {
+        Log.d("Selected", item.fileName.toString())
         bitmap.value = item.bitmap
     }
 
