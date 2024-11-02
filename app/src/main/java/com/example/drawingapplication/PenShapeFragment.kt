@@ -19,7 +19,7 @@ class PenShapeFragment : DialogFragment() {
     ): View? {
         binding =  FragmentPenShapeBinding.inflate(inflater, container, false)
         val myViewModel: DrawViewModel by activityViewModels{
-            DrawViewModelFactory((requireActivity().application as FileApplication).fileRepository)}
+            DrawViewModelFactory((requireActivity().application as FileApplication).fileRepository, requireContext())}
 
         //sets the shape to be circle
         binding.circleButton.setOnClickListener(){

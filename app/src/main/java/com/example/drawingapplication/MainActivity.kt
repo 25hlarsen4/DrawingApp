@@ -17,11 +17,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 
-
+// Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {
     val binding: ActivityMainActualBinding by lazy {ActivityMainActualBinding.inflate(layoutInflater)}
     val myViewModel: DrawViewModel by viewModels{
-        DrawViewModelFactory((application as FileApplication).fileRepository)}
+        DrawViewModelFactory((application as FileApplication).fileRepository, this)}
 
     private lateinit var drawView: DrawView
 
@@ -30,8 +30,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
-
-
 
         setContent {
             // A surface container using the 'background' color from the theme
@@ -44,13 +42,13 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        // Add Submit contact information fragment to fragment on Main Activity
+//        // Add Submit contact information fragment to fragment on Main Activity
 //        supportFragmentManager.commit {
 //            replace<DrawViewFragment>(R.id.main_screen)
 //        }
-
-        // Here because fragments
-        //setContentView(binding.root)
+//
+//        // Here because fragments
+//        setContentView(binding.root)
     }
 
 }

@@ -19,12 +19,12 @@ import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.runtime.toMutableStateList
 
-private fun getDrawViewObjects() = List(1) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
+private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
 
 // Ayden's Repository creation for view model replace with one below if not working because of database.
 // If this is active then uncomment allfiles savefiles and DrawViewModelFactory below
 //class DrawViewModel(private val repository: FileRepository) : ViewModel() {
-class DrawViewModel(private val repository: FileRepository) : ViewModel() {
+class DrawViewModel(private val repository: FileRepository, context: Context) : ViewModel() {
 //    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
 //    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
 // Bitmap is initialized with a width of 1 and height of 1 to not crash program
@@ -57,6 +57,22 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
 
     // LiveData
     var bm = bitmap as LiveData<Bitmap>
+
+    val allFiles: LiveData<List<FileData>> = repository.allFiles
+
+    init {
+        allFiles.observeForever { files ->
+            files?.let {
+                val drawViewObjectList = mutableListOf<DrawViewObject>()
+                for (i in it.indices) {
+                    val file = it[i]
+                    drawViewObjectList.add(DrawViewObject(i, file.filename, loadFile(file.filename, context)))
+                }
+                _DrawViewObjects.addAll(drawViewObjectList)
+            }
+        }
+    }
+
 
     fun select(item: DrawViewObject) {
         bitmap.value = item.bitmap
@@ -116,20 +132,16 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
         }
     }
 
-    val allFiles: LiveData<List<FileData>> = repository.allFiles
-
     fun addFile(fileName: String){
         Log.e("VM", "adding file $fileName")
         repository.addFile(fileName)
     }
 
-    fun saveFile(bitmap: Bitmap, fileName: String) {
+    fun saveFile(bitmap: Bitmap, context: Context, fileName: String) {
         // Ensure external storage is available for writing
-        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val file = File(context.getExternalFilesDir(null), "$fileName.png")
 
-        // Create the file object
-        val file = File(storageDir, "$fileName.png")
-        addFile(fileName)
+        addFile("$fileName.png")
         try {
             // Open the output stream
             val outputStream = FileOutputStream(file)
@@ -145,13 +157,17 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
         }
     }
 
-    fun loadFile(filename: String, context: Context): Bitmap? {
+    fun loadFile(filename: String, context: Context): Bitmap {
         val file = File(context.getExternalFilesDir(null), filename)
 
         return if (file.exists()) {
-            BitmapFactory.decodeFile(file.absolutePath)
+            BitmapFactory.decodeFile(file.absolutePath) ?: run {
+                Log.d("LoadFile", "Failed to decode bitmap from: ${file.absolutePath}")
+                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) // Placeholder
+            }
         } else {
-            null // Handle file not found case
+            Log.d("LoadFile", "File not found: ${file.absolutePath}")
+            Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) // Placeholder
         }
     }
 
@@ -160,11 +176,11 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
 
 // This factory class allows us to define custom constructors for the view model
 
-class DrawViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
+class DrawViewModelFactory(private val repository: FileRepository, private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DrawViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return DrawViewModel(repository) as T
+            return DrawViewModel(repository, context) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

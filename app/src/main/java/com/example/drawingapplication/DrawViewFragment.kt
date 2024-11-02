@@ -20,7 +20,7 @@ class DrawViewFragment : Fragment() {
     ): View? {
         binding =  FragmentDrawViewBinding.inflate(inflater, container, false)
         val myViewModel: DrawViewModel by activityViewModels{
-            DrawViewModelFactory((requireActivity().application as FileApplication).fileRepository)}
+            DrawViewModelFactory((requireActivity().application as FileApplication).fileRepository, requireContext())}
 
         // Getting the draw view
         val drawView = binding.drawingCanvas
@@ -28,6 +28,11 @@ class DrawViewFragment : Fragment() {
         myViewModel.bm.observe(viewLifecycleOwner) { bitmap ->
             // Invalidate the view to trigger a redraw
             drawView.invalidate()
+        }
+
+        binding.penButton.setOnClickListener {
+            val penSizeFragment = PenSizeFragment()
+            penSizeFragment.show(parentFragmentManager, "pen_size_fragment")
         }
 
         binding.colorButton.setOnClickListener {

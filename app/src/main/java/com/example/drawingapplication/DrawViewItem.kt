@@ -8,7 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
 import android.graphics.Bitmap
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 
 
 @Composable
@@ -26,6 +30,11 @@ fun DrawViewItem(
                 .weight(1f)
                 .padding(start = 16.dp),
             text = fileName
+        )
+        Image(
+            bitmap = picture.asImageBitmap(),
+            contentDescription = "Current picture of Drawing",
+            modifier = Modifier.size(128.dp)
         )
         Button(
             modifier = Modifier
