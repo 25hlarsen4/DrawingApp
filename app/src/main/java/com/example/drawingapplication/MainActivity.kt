@@ -15,7 +15,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 // Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {
@@ -39,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             ) {
 //                DrawViewListScreen(drawViewListViewModel = myViewModel)
                 DrawCanvas(myViewModel)
+                MyApp(vm = myViewModel)
             }
         }
 
@@ -51,5 +56,28 @@ class MainActivity : AppCompatActivity() {
 //        // Here because fragments
 //        setContentView(binding.root)
     }
+
+}
+
+@Composable
+fun MyApp(vm: DrawViewModel) {
+    val navController = rememberNavController() // Remember the NavController
+
+    // Define the navigation graph
+    NavHost(navController = navController, startDestination = "drawingList") {
+        composable("drawingList") { DrawViewListScreen(drawViewListViewModel = vm, navController = navController) }
+        composable("drawingScreen") { backStackEntry ->
+            DrawCanvas(vm)
+        }
+//        composable("drawingScreen/{drawingId}") { backStackEntry ->
+//            val drawingId = backStackEntry.arguments?.getString("drawingId") // Get the drawingId from arguments
+//            DrawCanvas(vm, drawingId)
+//        }
+    }
+
+//    // Define the navigation graph
+//    NavHost(navController = navController, startDestination = "drawingScreen") {
+//        composable("drawingScreen") { DrawViewScreen(vm) }
+//    }
 
 }

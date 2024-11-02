@@ -20,7 +20,7 @@ import java.io.FileOutputStream
 import androidx.compose.runtime.toMutableStateList
 
 
-private fun getDrawViewObjects() = List(1) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
+private fun getDrawViewObjects() = List(1) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1200, 1200, Bitmap.Config.ARGB_8888) )}
 
 // Ayden's Repository creation for view model replace with one below if not working because of database.
 // If this is active then uncomment allfiles savefiles and DrawViewModelFactory below

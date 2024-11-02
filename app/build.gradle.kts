@@ -58,6 +58,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.compose)
     androidTestImplementation(libs.androidx.core)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

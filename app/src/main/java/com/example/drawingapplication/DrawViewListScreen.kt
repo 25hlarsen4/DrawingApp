@@ -11,17 +11,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 @Composable
 fun DrawViewListScreen(
     modifier: Modifier = Modifier,
-    drawViewListViewModel: DrawViewModel
+    drawViewListViewModel: DrawViewModel,
+    navController: NavHostController
 ) {
     Column(modifier = modifier) {
         DrawViewList(
             list = drawViewListViewModel.DrawViewObjects,
             onSelectedTask = { drawViewObject ->
                 drawViewListViewModel.select(drawViewObject)
+                navController.navigate("drawingScreen")
             }
         )
 
