@@ -35,6 +35,7 @@ fun DrawViewListScreen(
                 // Create a new DrawViewObject with placeholder values
                 val newDrawing = DrawViewObject(999999999, "", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
                 drawViewListViewModel.select(newDrawing) // Select the new drawing
+                navController.navigate("drawingScreen")
             },
             modifier = Modifier
                 .fillMaxWidth()

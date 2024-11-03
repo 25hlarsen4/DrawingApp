@@ -1,5 +1,6 @@
 package com.example.drawingapplication
 
+import DrawCanvas
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                 color = MaterialTheme.colorScheme.background
             ) {
 //                DrawViewListScreen(drawViewListViewModel = myViewModel)
-                DrawCanvas(myViewModel)
+               // DrawCanvas(myViewModel)
                 MyApp(vm = myViewModel)
             }
         }
