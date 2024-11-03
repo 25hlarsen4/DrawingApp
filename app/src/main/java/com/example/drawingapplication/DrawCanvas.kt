@@ -1,4 +1,6 @@
+import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -19,21 +21,27 @@ import androidx.fragment.app.FragmentActivity
 import com.example.drawingapplication.DrawViewModel
 import com.example.drawingapplication.PenShapeFragment
 import com.example.drawingapplication.PenSizeFragment
+import com.example.drawingapplication.SaveFragment
 import yuku.ambilwarna.AmbilWarnaDialog
+
 
 @Composable
 fun DrawCanvas(myViewModel: DrawViewModel, modifier: Modifier = Modifier) {
     val bitmap by myViewModel.bitmap.observeAsState(initial = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888))
-
+    val context = LocalContext.current
+    val displayMetrics = context.resources.displayMetrics
+    val screenWidth = displayMetrics.widthPixels
+    val density = context.resources.displayMetrics.density
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Gray) // Set the background color to gray
+            .background(Color.Gray) // Background color
     ) {
-        // Drawing canvas with a white background
+        Log.d("screenWidth",  screenWidth.toString())
         Canvas(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .height((screenWidth/density).dp)
                 .background(Color.White) // Canvas background
                 .pointerInput(Unit) {
                     detectDragGestures(
@@ -50,32 +58,36 @@ fun DrawCanvas(myViewModel: DrawViewModel, modifier: Modifier = Modifier) {
         ) {
             drawImage(bitmap.asImageBitmap(), topLeft = androidx.compose.ui.geometry.Offset(0f, 0f))
         }
+
         val context = LocalContext.current
+
         // Main Column for Buttons
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp),
-            verticalArrangement = Arrangement.SpaceBetween // Space between items
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Spacer to push the top buttons to the middle
-            Spacer(modifier = Modifier.weight(1f)) // Pushes the next row down
+            Spacer(modifier = Modifier.weight(1f)) // Pushes buttons down
 
-            // Row with three buttons in the middle
+            // Row with action buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly, // Adjust to even space
+                horizontalArrangement = Arrangement.SpaceBetween, // Even spacing
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
                     onClick = {
-                        val PenFragment = PenShapeFragment()
-                        PenFragment.show((context as FragmentActivity).supportFragmentManager, "PenShapeFragment")},
-                    modifier = Modifier.weight(1f) // Make buttons fill available space
+                        val penFragment = PenShapeFragment()
+                        penFragment.show((context as FragmentActivity).supportFragmentManager, "PenShapeFragment")
+                    },
+                    modifier = Modifier.weight(1f) // Make button fill available space
                 ) {
                     Text("Shape")
                 }
+
                 Spacer(modifier = Modifier.width(8.dp)) // Space between buttons
+
                 Button(
                     onClick = {
                         val colorPicker = AmbilWarnaDialog(
@@ -83,49 +95,57 @@ fun DrawCanvas(myViewModel: DrawViewModel, modifier: Modifier = Modifier) {
                             myViewModel.getColor(),
                             object : AmbilWarnaDialog.OnAmbilWarnaListener {
                                 override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
-                                    // Action when OK is pressed (color selected)
                                     myViewModel.updateColor(color)
                                 }
 
-                                override fun onCancel(dialog: AmbilWarnaDialog) {
-                                    // Needs to be here, otherwise error, but functionally serves
-                                    //no purpose for our app
-                                }
+                                override fun onCancel(dialog: AmbilWarnaDialog) {}
                             })
-                        // Show the color picker dialog
                         colorPicker.show()
                     },
-                    modifier = Modifier.weight(1f) // Make buttons fill available space
+                    modifier = Modifier.weight(1f) // Make button fill available space
                 ) {
                     Text("Color")
                 }
+
                 Spacer(modifier = Modifier.width(8.dp)) // Space between buttons
+
                 Button(
                     onClick = {
                         val penSizeFragment = PenSizeFragment()
-                        penSizeFragment.show((context as FragmentActivity).supportFragmentManager, "PenShapeFragment")
+                        penSizeFragment.show((context as FragmentActivity).supportFragmentManager, "PenSizeFragment")
                     },
-                    modifier = Modifier.weight(1f) // Make buttons fill available space
+                    modifier = Modifier.weight(1f) // Make button fill available space
                 ) {
                     Text("Size")
                 }
             }
 
-            // Save or go back to Drawing list
+            // Save or go back
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly // Adjust to your layout preference
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = { /* Handle Button 4 click */ },
-                    modifier = Modifier.weight(1f) // Make buttons fill available space
+                    onClick = {
+                        // This needs to go to homescreen
+                    },
+                    modifier = Modifier.weight(1f) // Make button fill available space
                 ) {
                     Text("Back")
                 }
+
                 Spacer(modifier = Modifier.width(8.dp)) // Space between buttons
+
                 Button(
-                    onClick = { /* Handle Button 5 click */ },
-                    modifier = Modifier.weight(1f) // Make buttons fill available space
+                    onClick = {
+                        val saveFragment = SaveFragment()
+                        if (myViewModel.filename.isEmpty()) {
+                            saveFragment.show((context as FragmentActivity).supportFragmentManager, "SaveFragment")
+                        } else {
+                            myViewModel.saveFile(bitmap, context, myViewModel.filename)
+                        }
+                    },
+                    modifier = Modifier.weight(1f) // Make button fill available space
                 ) {
                     Text("Save")
                 }
@@ -133,3 +153,5 @@ fun DrawCanvas(myViewModel: DrawViewModel, modifier: Modifier = Modifier) {
         }
     }
 }
+
+

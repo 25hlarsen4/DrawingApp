@@ -20,7 +20,7 @@ import java.io.FileOutputStream
 import androidx.compose.runtime.toMutableStateList
 
 
-private fun getDrawViewObjects() = List(1) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1200, 1200, Bitmap.Config.ARGB_8888) )}
+private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
 
 // Ayden's Repository creation for view model replace with one below if not working because of database.
 // If this is active then uncomment allfiles savefiles and DrawViewModelFactory below
@@ -48,6 +48,7 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
     var strokeSize = 8
     var colorVal = Color.BLACK
     var shape = false
+    var filename = ""
 
     // Screen Dimensions
     var screenWidth = 1200
@@ -81,6 +82,8 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 
     fun select(item: DrawViewObject) {
         Log.d("Selected", item.fileName.toString())
+        filename = item.fileName.toString()
+        Log.d("Filename", filename)
         _bitmap.value = item.bitmap
     }
 
@@ -162,9 +165,29 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 
     fun saveFile(bitmap: Bitmap, context: Context, fileName: String) {
         // Ensure external storage is available for writing
+        var fileName = fileName
+        if (fileName.endsWith(".png"))
+        {
+            fileName = fileName.replace(".png", "")
+        }
         val file = File(context.getExternalFilesDir(null), "$fileName.png")
 
-        addFile("$fileName.png")
+        var fileExists = false
+        for (fileData in allFiles.value!!)
+        {
+            Log.d("SaveFileCheck", fileData.filename)
+            if (fileData.filename == this.filename)
+            {
+                fileExists = true
+                break
+            }
+        }
+        if (!fileExists)
+        {
+            Log.d("Adding to Database", fileName)
+            addFile("$fileName.png")
+        }
+        Log.d("Saving File", fileName)
         try {
             // Open the output stream
             val outputStream = FileOutputStream(file)

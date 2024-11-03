@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import android.content.Context
 
 // Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {
