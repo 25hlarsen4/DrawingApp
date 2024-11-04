@@ -95,7 +95,12 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
         paint.strokeWidth = strokeSize.toFloat()
 
         // Draw line from the last position to the current position
-        canvas.drawLine(startX, startY, currentX, currentY, paint)
+        if (shape) {
+            canvas.drawCircle(currentX, currentY, strokeSize.toFloat(), paint)
+        }
+        else {
+            canvas.drawLine(startX, startY, currentX, currentY, paint)
+        }
 
         // Update start position for the next draw
         startX = currentX
