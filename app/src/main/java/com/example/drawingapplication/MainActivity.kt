@@ -69,7 +69,7 @@ fun MyApp(vm: DrawViewModel) {
     NavHost(navController = navController, startDestination = "drawingList") {
         composable("drawingList") { DrawViewListScreen(drawViewListViewModel = vm, navController = navController) }
         composable("drawingScreen") { backStackEntry ->
-            DrawCanvas(vm)
+            DrawCanvas(vm, navController)
         }
 //        composable("drawingScreen/{drawingId}") { backStackEntry ->
 //            val drawingId = backStackEntry.arguments?.getString("drawingId") // Get the drawingId from arguments

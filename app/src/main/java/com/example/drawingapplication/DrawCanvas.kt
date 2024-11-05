@@ -18,6 +18,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.NavHostController
 import com.example.drawingapplication.DrawViewModel
 import com.example.drawingapplication.PenShapeFragment
 import com.example.drawingapplication.PenSizeFragment
@@ -26,7 +27,7 @@ import yuku.ambilwarna.AmbilWarnaDialog
 
 
 @Composable
-fun DrawCanvas(myViewModel: DrawViewModel, modifier: Modifier = Modifier) {
+fun DrawCanvas(myViewModel: DrawViewModel, navController: NavHostController, modifier: Modifier = Modifier) {
     val bitmap by myViewModel.bitmap.observeAsState(initial = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888))
     val context = LocalContext.current
     val displayMetrics = context.resources.displayMetrics
@@ -127,7 +128,7 @@ fun DrawCanvas(myViewModel: DrawViewModel, modifier: Modifier = Modifier) {
             ) {
                 Button(
                     onClick = {
-                        // This needs to go to homescreen
+                        navController.navigate("drawingList")
                     },
                     modifier = Modifier.weight(1f) // Make button fill available space
                 ) {
