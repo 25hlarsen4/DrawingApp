@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.test.core.app.takeScreenshotNoSync
 import com.example.drawingapplication.databinding.FragmentDrawViewBinding
 import yuku.ambilwarna.AmbilWarnaDialog
 

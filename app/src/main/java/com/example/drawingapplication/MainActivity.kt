@@ -22,6 +22,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import android.content.Context
+import android.content.res.Configuration
+import android.util.Log
 
 // Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("MainAct", "creating")
 
         installSplashScreen()
 
@@ -57,6 +60,22 @@ class MainActivity : AppCompatActivity() {
 //
 //        // Here because fragments
 //        setContentView(binding.root)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Log.d("hello", "helloooooooo")
+
+        // Check if the orientation has changed
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.d("OrientationChange", "Orientation changed to Landscape")
+            myViewModel.onScreenOrientationChanged(isPort = false, width = newConfig.screenWidthDp, height = newConfig.screenHeightDp)
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.d("OrientationChange", "Orientation changed to Portrait")
+            myViewModel.onScreenOrientationChanged(isPort = true, width = newConfig.screenWidthDp, height = newConfig.screenHeightDp)
+        }
+
+        // Perform any additional logic here, such as calling your ViewModel
     }
 
 }
