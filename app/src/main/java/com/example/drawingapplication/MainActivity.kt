@@ -37,6 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         installSplashScreen()
 
+        if (supportActionBar != null) {
+            supportActionBar?.hide();
+        }
+
         setContent {
             // A surface container using the 'background' color from the theme
             Surface(
