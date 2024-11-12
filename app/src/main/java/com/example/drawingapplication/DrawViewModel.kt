@@ -56,7 +56,7 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 
     // First run
     var first = true
-    var isPortrait = false
+    var isPortrait = true
     var change = false
 
     // LiveData
@@ -128,6 +128,13 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 //        // Notify observers about the updated bitmap
 //        bitmap.value = currentBitmap
 //    }
+
+    fun onScreenOrientationChanged(isPort: Boolean, width: Int, height: Int) {
+        if (isPortrait != isPort) {
+            isPortrait = isPort
+            changeScreenDimensions(width, height)
+        }
+    }
 
     fun changeScreenDimensions(width: Int, height: Int){
         if (width <= 0 || height <= 0)
