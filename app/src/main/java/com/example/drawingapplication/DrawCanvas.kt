@@ -206,6 +206,7 @@ fun DrawCanvas(myViewModel: DrawViewModel, navController: NavHostController, mod
                 Button(
                     onClick = {
                         navController.navigate("drawingList")
+                        myViewModel.loadFiles(context)
                     },
                     modifier = Modifier.weight(1f) // Make button fill available space
                 ) {

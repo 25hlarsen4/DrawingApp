@@ -15,16 +15,19 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
 
 @Composable
 fun DrawViewListScreen(
     modifier: Modifier = Modifier,
-    drawViewListViewModel: DrawViewModel,
-    navController: NavHostController
 ) {
     val context = LocalContext.current
+    val navController = (context as MainActivity).navController
+
+    val drawViewListViewModel: DrawViewModel = (context as MainActivity).myViewModel
 
     Column(modifier = modifier.fillMaxSize()) { // Ensure the column takes full height
 

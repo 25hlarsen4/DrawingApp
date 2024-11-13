@@ -24,13 +24,15 @@ import androidx.navigation.compose.rememberNavController
 import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 // Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {
     val binding: ActivityMainActualBinding by lazy {ActivityMainActualBinding.inflate(layoutInflater)}
     val myViewModel: DrawViewModel by viewModels{
         DrawViewModelFactory((application as FileApplication).fileRepository, this)}
-
+    lateinit var navController: NavController
     private lateinit var drawView: DrawView
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -52,7 +54,19 @@ class MainActivity : AppCompatActivity() {
             ) {
 //                DrawViewListScreen(drawViewListViewModel = myViewModel)
                // DrawCanvas(myViewModel)
-                MyApp(vm = myViewModel)
+                navController = rememberNavController() // Remember the NavController
+
+                // Define the navigation graph
+                NavHost(navController = navController as NavHostController, startDestination = "drawingList") {
+                    composable("drawingList") { DrawViewListScreen() }
+                    composable("drawingScreen") { backStackEntry ->
+                        DrawCanvas(myViewModel, navController as NavHostController)
+                    }
+    //        composable("drawingScreen/{drawingId}") { backStackEntry ->
+    //            val drawingId = backStackEntry.arguments?.getString("drawingId") // Get the drawingId from arguments
+    //            DrawCanvas(vm, drawingId)
+    //        }
+                }
             }
         }
 
@@ -84,25 +98,25 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-@Composable
-fun MyApp(vm: DrawViewModel) {
-    val navController = rememberNavController() // Remember the NavController
-
-    // Define the navigation graph
-    NavHost(navController = navController, startDestination = "drawingList") {
-        composable("drawingList") { DrawViewListScreen(drawViewListViewModel = vm, navController = navController) }
-        composable("drawingScreen") { backStackEntry ->
-            DrawCanvas(vm, navController)
-        }
+//@Composable
+//fun MyApp(vm: DrawViewModel) {
+//    navController = rememberNavController() // Remember the NavController
+//
+//    // Define the navigation graph
+//    NavHost(navController = navController, startDestination = "drawingList") {
+//        composable("drawingList") { DrawViewListScreen() }
+//        composable("drawingScreen") { backStackEntry ->
+//            DrawCanvas(vm, navController)
+//        }
 //        composable("drawingScreen/{drawingId}") { backStackEntry ->
 //            val drawingId = backStackEntry.arguments?.getString("drawingId") // Get the drawingId from arguments
 //            DrawCanvas(vm, drawingId)
 //        }
-    }
+//    }
 
 //    // Define the navigation graph
 //    NavHost(navController = navController, startDestination = "drawingScreen") {
 //        composable("drawingScreen") { DrawViewScreen(vm) }
 //    }
 
-}
+//}

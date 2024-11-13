@@ -18,6 +18,7 @@ import android.os.Environment
 import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.runtime.toMutableStateList
+import androidx.navigation.NavController
 
 
 private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
@@ -176,14 +177,17 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
     }
 
     fun loadFiles(context: Context) {
+        Log.d("Files", _DrawViewObjects.toString())
         _DrawViewObjects.clear()
 
+        Log.d("Files", _DrawViewObjects.toString())
         allFiles.value?.let { files ->
             val drawViewObjectList = files.mapIndexed { i, file ->
                 DrawViewObject(i, file.filename, loadFile(file.filename, context))
             }
             _DrawViewObjects.addAll(drawViewObjectList)
         }
+        Log.d("Files", _DrawViewObjects.toString())
     }
 
     fun saveFile(bitmap: Bitmap, context: Context, fileName: String) {
