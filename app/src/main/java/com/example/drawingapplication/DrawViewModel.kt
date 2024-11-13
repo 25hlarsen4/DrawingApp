@@ -175,6 +175,17 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
         repository.addFile(fileName)
     }
 
+    fun loadFiles(context: Context) {
+        _DrawViewObjects.clear()
+
+        allFiles.value?.let { files ->
+            val drawViewObjectList = files.mapIndexed { i, file ->
+                DrawViewObject(i, file.filename, loadFile(file.filename, context))
+            }
+            _DrawViewObjects.addAll(drawViewObjectList)
+        }
+    }
+
     fun saveFile(bitmap: Bitmap, context: Context, fileName: String) {
         // Ensure external storage is available for writing
         var fileName = fileName
@@ -210,6 +221,9 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
             // Close the output stream
             outputStream.flush()
             outputStream.close()
+
+            // to get updates to immediately show in lazy column
+            loadFiles(context)
         } catch (e: Exception) {
             e.printStackTrace()
         }
