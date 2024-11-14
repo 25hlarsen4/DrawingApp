@@ -1,5 +1,6 @@
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.example.drawingapplication.DrawViewListScreen
 import org.junit.Rule
 import org.junit.Test
 
@@ -12,7 +13,7 @@ class MainScreenTest {
     fun testCreateNewDrawingButtonExists() {
         // Set up the Compose content for testing
         composeTestRule.setContent {
-            MainScreen(onCreateNewDrawing = {})
+            DrawViewListScreen()
         }
 
         // Check if the button with the text "Create a new drawing" exists
