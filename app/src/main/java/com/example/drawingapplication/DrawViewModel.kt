@@ -1,6 +1,8 @@
 package com.example.drawingapplication
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
@@ -12,14 +14,31 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import kotlin.js.ExperimentalJsFileName
+import android.os.Environment
+import java.io.File
+import java.io.FileOutputStream
+import androidx.compose.runtime.toMutableStateList
+import androidx.navigation.NavController
 
-class DrawViewModel(private val repository: FileRepository) : ViewModel() {
+
+private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
+
+// Ayden's Repository creation for view model replace with one below if not working because of database.
+// If this is active then uncomment allfiles savefiles and DrawViewModelFactory below
+//class DrawViewModel(private val repository: FileRepository) : ViewModel() {
+class DrawViewModel(private val repository: FileRepository, context: Context) : ViewModel() {
 //    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
 //    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
 // Bitmap is initialized with a width of 1 and height of 1 to not crash program
-    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+//    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
 //    val bitmapCanvas = Canvas(bitmap.value!!)
+    private val _bitmap = MutableLiveData<Bitmap>()
+    val bitmap: LiveData<Bitmap> get() = _bitmap
+
+    // Compose variables
+    private val _DrawViewObjects = getDrawViewObjects().toMutableStateList()
+    val DrawViewObjects: List<DrawViewObject>
+        get() = _DrawViewObjects
 
     // Drawing variables
     var startX = 50f
@@ -30,6 +49,7 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
     var strokeSize = 8
     var colorVal = Color.BLACK
     var shape = false
+    var filename = ""
 
     // Screen Dimensions
     var screenWidth = 1200
@@ -37,32 +57,85 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
 
     // First run
     var first = true
-    var isPortrait = false
+    var isPortrait = true
     var change = false
 
     // LiveData
-    var bm = bitmap as LiveData<Bitmap>
+//    var bm = bitmap as LiveData<Bitmap>
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun draw() {
-        // Get bitmap
-        val currentBitmap = bitmap.value!!
-        val canvas = Canvas(currentBitmap)
+    val allFiles: LiveData<List<FileData>> = repository.allFiles
+
+    init {
+        _bitmap.value = Bitmap.createBitmap(screenWidth, screenWidth, Bitmap.Config.ARGB_8888)
+
+        allFiles.observeForever { files ->
+            files?.let {
+                val drawViewObjectList = mutableListOf<DrawViewObject>()
+                for (i in it.indices) {
+                    val file = it[i]
+                    drawViewObjectList.add(DrawViewObject(i, file.filename, loadFile(file.filename, context)))
+                }
+                _DrawViewObjects.addAll(drawViewObjectList)
+            }
+        }
+    }
+
+
+    fun select(item: DrawViewObject) {
+        Log.d("Selected", item.fileName.toString())
+        filename = item.fileName.toString()
+        Log.d("Filename", filename)
+        _bitmap.value = item.bitmap
+    }
+
+    fun draw(currentX: Float, currentY: Float) {
+        val currentBitmap = bitmap.value!!.copy(Bitmap.Config.ARGB_8888, true)
+        val canvas = android.graphics.Canvas(currentBitmap)
 
         paint.color = colorVal
         paint.strokeWidth = strokeSize.toFloat()
 
+        // Draw line from the last position to the current position
         if (shape) {
-            canvas.drawCircle(startX, startY, strokeSize.toFloat(), paint)
-        }else{
-            canvas.drawLine(startX, startY, endX, endY, paint)
+            canvas.drawCircle(currentX, currentY, strokeSize.toFloat(), paint)
+        }
+        else {
+            canvas.drawLine(startX, startY, currentX, currentY, paint)
         }
 
+        // Update start position for the next draw
+        startX = currentX
+        startY = currentY
 
-        // Notify observers about the updated bitmap
-        bitmap.value = currentBitmap
+        _bitmap.value = currentBitmap
     }
 
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    fun draw() {
+//        // Get bitmap
+//        val currentBitmap = bitmap.value!!
+//        val canvas = Canvas(currentBitmap)
+//
+//        paint.color = colorVal
+//        paint.strokeWidth = strokeSize.toFloat()
+//
+//        if (shape) {
+//            canvas.drawCircle(startX, startY, strokeSize.toFloat(), paint)
+//        }else{
+//            canvas.drawLine(startX, startY, endX, endY, paint)
+//        }
+//
+//
+//        // Notify observers about the updated bitmap
+//        bitmap.value = currentBitmap
+//    }
+
+    fun onScreenOrientationChanged(isPort: Boolean, width: Int, height: Int) {
+        if (isPortrait != isPort) {
+            isPortrait = isPort
+            changeScreenDimensions(width, height)
+        }
+    }
 
     fun changeScreenDimensions(width: Int, height: Int){
         if (width <= 0 || height <= 0)
@@ -70,36 +143,12 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
         screenWidth = width
         screenHeight = height
 
-        if (first) {
-            if (width < height)
-            {
-                isPortrait = true
-            }
-            first = false
-        }
-
         var m = Matrix()
         m.postRotate(0f)
-        if (width > height && isPortrait == true && !first)
-        {
-            m.postRotate(-90f)
-            change = true
-            isPortrait = false
-        }
-        else if (height > width && isPortrait == false && !first)
-        {
-            m.postRotate(90f)
-            change = true
-            isPortrait = true
-        }
+
         val currentBitmap = bitmap.value!!
         var scaledBitmap =  Bitmap.createScaledBitmap(currentBitmap, screenWidth, screenHeight, false)
-        if (change) {
-            scaledBitmap = Bitmap.createScaledBitmap(currentBitmap, screenHeight, screenWidth, false)
-        }
-
-        change = false
-        bitmap.value  = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), m, true)
+        _bitmap.value  = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), m, true)
     }
 
     fun updatePenSize(newSize: Int) {
@@ -122,22 +171,92 @@ class DrawViewModel(private val repository: FileRepository) : ViewModel() {
         }
     }
 
-    val allFiles: LiveData<List<FileData>> = repository.allFiles
-
     fun addFile(fileName: String){
         Log.e("VM", "adding file $fileName")
         repository.addFile(fileName)
     }
 
+    fun loadFiles(context: Context) {
+        Log.d("Files", _DrawViewObjects.toString())
+        _DrawViewObjects.clear()
+
+        Log.d("Files", _DrawViewObjects.toString())
+        allFiles.value?.let { files ->
+            val drawViewObjectList = files.mapIndexed { i, file ->
+                DrawViewObject(i, file.filename, loadFile(file.filename, context))
+            }
+            _DrawViewObjects.addAll(drawViewObjectList)
+        }
+        Log.d("Files", _DrawViewObjects.toString())
+    }
+
+    fun saveFile(bitmap: Bitmap, context: Context, fileName: String) {
+        // Ensure external storage is available for writing
+        var fileName = fileName
+        if (fileName.endsWith(".png"))
+        {
+            fileName = fileName.replace(".png", "")
+        }
+        val file = File(context.getExternalFilesDir(null), "$fileName.png")
+
+        var fileExists = false
+        for (fileData in allFiles.value!!)
+        {
+            Log.d("SaveFileCheck", fileData.filename)
+            if (fileData.filename == this.filename)
+            {
+                fileExists = true
+                break
+            }
+        }
+        if (!fileExists)
+        {
+            Log.d("Adding to Database", fileName)
+            addFile("$fileName.png")
+        }
+        Log.d("Saving File", fileName)
+        try {
+            // Open the output stream
+            val outputStream = FileOutputStream(file)
+
+            // Compress the bitmap and write it to the output stream
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+
+            // Close the output stream
+            outputStream.flush()
+            outputStream.close()
+
+            // to get updates to immediately show in lazy column
+            loadFiles(context)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun loadFile(filename: String, context: Context): Bitmap {
+        val file = File(context.getExternalFilesDir(null), filename)
+
+        return if (file.exists()) {
+            BitmapFactory.decodeFile(file.absolutePath) ?: run {
+                Log.d("LoadFile", "Failed to decode bitmap from: ${file.absolutePath}")
+                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) // Placeholder
+            }
+        } else {
+            Log.d("LoadFile", "File not found: ${file.absolutePath}")
+            Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) // Placeholder
+        }
+    }
+
+
 }
 
 // This factory class allows us to define custom constructors for the view model
 
-class WeatherViewModelFactory(private val repository: FileRepository) : ViewModelProvider.Factory {
+class DrawViewModelFactory(private val repository: FileRepository, private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DrawViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return DrawViewModel(repository) as T
+            return DrawViewModel(repository, context) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

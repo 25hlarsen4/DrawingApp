@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 //the version stuff is for managing DB migrations
 @Database(entities= [FileData::class], version = 1, exportSchema = false)
 //This lets use have an entity with a "Date" in it which Room won't natively support
-@TypeConverters(Converters::class)
+@TypeConverters(TimeConverters::class)
 abstract class FileDatabase : RoomDatabase(){
     abstract fun fileDao(): FileDAO
 

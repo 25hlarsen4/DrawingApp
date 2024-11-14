@@ -6,45 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- the custom drawing canvas -->
-    <com.example.drawingapplication.DrawView
-        android:id="@+id/drawing_canvas"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_screen"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <!-- Bottom panel with icons for pen and color options -->
-    <LinearLayout
-        android:id="@+id/bottom_panel"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="bottom">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/color_picker"
-            android:layout_width="5dp"
-            android:layout_height="5dp"/>
-
-        <ImageButton
-            android:id="@+id/pen_button"
-            android:layout_width="75dp"
-            android:layout_height="60dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/pensize"
-            tools:src="@drawable/pencil" />
-
-        <ImageButton
-            android:id="@+id/color_button"
-            android:layout_width="75dp"
-            android:layout_height="60dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/color" />
-
-        <ImageButton
-            android:id="@+id/shape_button"
-            android:layout_width="75dp"
-            android:layout_height="60dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/circle" />
-
-    </LinearLayout>
+        android:layout_height="match_parent" />
 </FrameLayout>

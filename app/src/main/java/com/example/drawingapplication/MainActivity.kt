@@ -1,5 +1,6 @@
 package com.example.drawingapplication
 
+import DrawCanvas
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
@@ -9,94 +10,113 @@ import androidx.activity.viewModels
 import com.example.drawingapplication.databinding.ActivityMainActualBinding
 import yuku.ambilwarna.AmbilWarnaDialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import android.content.Context
+import android.content.res.Configuration
+import android.util.Log
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
-
-
+// Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {
     val binding: ActivityMainActualBinding by lazy {ActivityMainActualBinding.inflate(layoutInflater)}
-    val myViewModel: DrawViewModel by viewModels()
+    val myViewModel: DrawViewModel by viewModels{
+        DrawViewModelFactory((application as FileApplication).fileRepository, this)}
+    lateinit var navController: NavController
     private lateinit var drawView: DrawView
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("MainAct", "creating")
 
         installSplashScreen()
 
-        // Getting the draw view
-        drawView = binding.drawingCanvas
-
-        // Observing drawView for changes
-        myViewModel.bm.observe(this) {
-            drawView.invalidate()
+        if (supportActionBar != null) {
+            supportActionBar?.hide();
         }
 
-        binding.penButton.setOnClickListener {
-            val penSizeFragment = PenSizeFragment()
-            penSizeFragment.show(supportFragmentManager, "pen_size_fragment")
-        }
+        setContent {
+            // A surface container using the 'background' color from the theme
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+//                DrawViewListScreen(drawViewListViewModel = myViewModel)
+               // DrawCanvas(myViewModel)
+                navController = rememberNavController() // Remember the NavController
 
-        binding.colorButton.setOnClickListener {
-            //found it wasn't possible to have this open a pop up where we have the below code,
-            // so rather than have it in a fragment dialog, we have to call it here
-            // Otherwise, we end up with two dialogs popping up and you have to click once to even
-            // access the color picker (BAD UI)
-            val colorPicker = AmbilWarnaDialog(
-                this,
-                myViewModel.getColor(),
-                object : AmbilWarnaDialog.OnAmbilWarnaListener {
-                    override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
-                        // Action when OK is pressed (color selected)
-                        myViewModel.updateColor(color)
+                // Define the navigation graph
+                NavHost(navController = navController as NavHostController, startDestination = "drawingList") {
+                    composable("drawingList") { DrawViewListScreen() }
+                    composable("drawingScreen") { backStackEntry ->
+                        DrawCanvas(myViewModel, navController as NavHostController)
                     }
-
-                    override fun onCancel(dialog: AmbilWarnaDialog) {
-                        // Needs to be here, otherwise error, but functionally serves
-                        //no purpose for our app
-                    }
-                })
-            // Show the color picker dialog
-            colorPicker.show()
+    //        composable("drawingScreen/{drawingId}") { backStackEntry ->
+    //            val drawingId = backStackEntry.arguments?.getString("drawingId") // Get the drawingId from arguments
+    //            DrawCanvas(vm, drawingId)
+    //        }
+                }
+            }
         }
 
-        binding.shapeButton.setOnClickListener {
-            val penShapeFragment = PenShapeFragment()
-            penShapeFragment.show(supportFragmentManager, "pen_shape_fragment")
-        }
-        setContentView(binding.root)
+
+//        // Add Submit contact information fragment to fragment on Main Activity
+//        supportFragmentManager.commit {
+//            replace<DrawViewFragment>(R.id.main_screen)
+//        }
+//
+//        // Here because fragments
+//        setContentView(binding.root)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        // If event is null return instantly
-        event ?: return false
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Log.d("hello", "helloooooooo")
 
-        // If event isn't null then see what action the user did
-        when (event.action) {
-            // If the user presses click then record initial position
-            MotionEvent.ACTION_DOWN -> {
-                myViewModel.startX = event.x
-                myViewModel.startY = event.y - 60
-            }
-            // If the user moves the mouse while clicked then record it as the end position then draw.
-            // After drawing record position in case user moves cursor again.
-            MotionEvent.ACTION_MOVE -> {
-                myViewModel.endX = event.x
-                myViewModel.endY = event.y - 60
-
-                myViewModel.draw()
-
-                myViewModel.startX = event.x
-                myViewModel.startY = event.y - 60
-            }
-            // If the user lets go of click then record position then draw.
-            MotionEvent.ACTION_UP -> {
-
-                myViewModel.endX = event.x
-                myViewModel.endY = event.y - 60
-                myViewModel.draw()
-            }
+        // Check if the orientation has changed
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.d("OrientationChange", "Orientation changed to Landscape")
+            myViewModel.onScreenOrientationChanged(isPort = false, width = newConfig.screenWidthDp, height = newConfig.screenHeightDp)
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.d("OrientationChange", "Orientation changed to Portrait")
+            myViewModel.onScreenOrientationChanged(isPort = true, width = newConfig.screenWidthDp, height = newConfig.screenHeightDp)
         }
-        return true
+
+        // Perform any additional logic here, such as calling your ViewModel
     }
+
 }
+
+//@Composable
+//fun MyApp(vm: DrawViewModel) {
+//    navController = rememberNavController() // Remember the NavController
+//
+//    // Define the navigation graph
+//    NavHost(navController = navController, startDestination = "drawingList") {
+//        composable("drawingList") { DrawViewListScreen() }
+//        composable("drawingScreen") { backStackEntry ->
+//            DrawCanvas(vm, navController)
+//        }
+//        composable("drawingScreen/{drawingId}") { backStackEntry ->
+//            val drawingId = backStackEntry.arguments?.getString("drawingId") // Get the drawingId from arguments
+//            DrawCanvas(vm, drawingId)
+//        }
+//    }
+
+//    // Define the navigation graph
+//    NavHost(navController = navController, startDestination = "drawingScreen") {
+//        composable("drawingScreen") { DrawViewScreen(vm) }
+//    }
+
+//}

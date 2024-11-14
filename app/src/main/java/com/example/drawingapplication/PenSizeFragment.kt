@@ -19,7 +19,8 @@ class PenSizeFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding =  FragmentPenSizeBinding.inflate(inflater, container, false)
-        val myViewModel : DrawViewModel by activityViewModels()
+        val myViewModel: DrawViewModel by activityViewModels{
+            DrawViewModelFactory((requireActivity().application as FileApplication).fileRepository, requireContext())}
 
         binding.penSizeSeekbar.progress = myViewModel.strokeSize
 
