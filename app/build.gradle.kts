@@ -20,7 +20,12 @@ android {
             useSupportLibrary = true
         }
     }
-
+    testOptions {
+        unitTests {
+            // To configure JVM args for unit tests
+            isIncludeAndroidResources = true
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -88,6 +93,8 @@ dependencies {
     implementation("androidx.room:room-common:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation(libs.core.ktx)
+    implementation(libs.androidx.navigation.testing)
+    testImplementation(libs.androidx.ui.test.junit4.android)
     ksp("androidx.room:room-compiler:2.6.1")
 
     // Testing
@@ -96,6 +103,25 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    testImplementation("org.mockito:mockito-core:5.5.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-manifest:1.0.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    testImplementation("org.mockito:mockito-android:5.5.0")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:<compose-version>")
+    androidTestImplementation("androidx.compose.ui:ui-test-manifest:<compose-version>")
+    testImplementation("org.powermock:powermock-module-junit4:2.0.9")
+    ksp("com.google.devtools.ksp:symbol-processing-api:1.9.10-1.0.13")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+    testImplementation("org.powermock:powermock-module-junit4:2.0.0")
+    testImplementation("org.mockito:mockito-core:3.11.2")
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
+    testImplementation("junit:junit:4.13.2")
+
 
     // Debugging
     debugImplementation(libs.androidx.ui.tooling)

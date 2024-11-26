@@ -23,15 +23,7 @@ import androidx.navigation.NavController
 
 private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
 
-// Ayden's Repository creation for view model replace with one below if not working because of database.
-// If this is active then uncomment allfiles savefiles and DrawViewModelFactory below
-//class DrawViewModel(private val repository: FileRepository) : ViewModel() {
 class DrawViewModel(private val repository: FileRepository, context: Context) : ViewModel() {
-//    val bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1200, 2400, Bitmap.Config.ARGB_8888))
-//    private val rect: Rect by lazy {Rect(0,0, 600, 1000)}
-// Bitmap is initialized with a width of 1 and height of 1 to not crash program
-//    var bitmap:MutableLiveData<Bitmap> = MutableLiveData<Bitmap>(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
-//    val bitmapCanvas = Canvas(bitmap.value!!)
     private val _bitmap = MutableLiveData<Bitmap>()
     val bitmap: LiveData<Bitmap> get() = _bitmap
 
@@ -59,9 +51,6 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
     var first = true
     var isPortrait = true
     var change = false
-
-    // LiveData
-//    var bm = bitmap as LiveData<Bitmap>
 
     val allFiles: LiveData<List<FileData>> = repository.allFiles
 
@@ -109,26 +98,6 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
 
         _bitmap.value = currentBitmap
     }
-
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    fun draw() {
-//        // Get bitmap
-//        val currentBitmap = bitmap.value!!
-//        val canvas = Canvas(currentBitmap)
-//
-//        paint.color = colorVal
-//        paint.strokeWidth = strokeSize.toFloat()
-//
-//        if (shape) {
-//            canvas.drawCircle(startX, startY, strokeSize.toFloat(), paint)
-//        }else{
-//            canvas.drawLine(startX, startY, endX, endY, paint)
-//        }
-//
-//
-//        // Notify observers about the updated bitmap
-//        bitmap.value = currentBitmap
-//    }
 
     fun onScreenOrientationChanged(isPort: Boolean, width: Int, height: Int) {
         if (isPortrait != isPort) {

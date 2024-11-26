@@ -1,7 +1,6 @@
 package com.example.drawingapplication
 
 import android.content.Context
-import androidx.databinding.adapters.Converters
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert

@@ -3,7 +3,6 @@ package com.example.drawingapplication
 import android.app.Application
 import androidx.room.Room
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
 
 class FileApplication : Application() {

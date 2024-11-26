@@ -3,10 +3,8 @@ package com.example.drawingapplication
 import android.util.Log
 import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Date
-import kotlin.random.Random
 
 open class FileRepository(private val scope: CoroutineScope,
                           private val dao: FileDAO) {

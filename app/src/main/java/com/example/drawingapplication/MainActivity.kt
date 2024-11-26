@@ -3,25 +3,19 @@ package com.example.drawingapplication
 import DrawCanvas
 import android.os.Build
 import android.os.Bundle
-import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import com.example.drawingapplication.databinding.ActivityMainActualBinding
-import yuku.ambilwarna.AmbilWarnaDialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
 import androidx.navigation.NavController
@@ -33,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     val myViewModel: DrawViewModel by viewModels{
         DrawViewModelFactory((application as FileApplication).fileRepository, this)}
     lateinit var navController: NavController
-    private lateinit var drawView: DrawView
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,9 +45,7 @@ class MainActivity : AppCompatActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-//                DrawViewListScreen(drawViewListViewModel = myViewModel)
-               // DrawCanvas(myViewModel)
-                navController = rememberNavController() // Remember the NavController
+                navController = rememberNavController()
 
                 // Define the navigation graph
                 NavHost(navController = navController as NavHostController, startDestination = "drawingList") {
@@ -62,22 +53,9 @@ class MainActivity : AppCompatActivity() {
                     composable("drawingScreen") { backStackEntry ->
                         DrawCanvas(myViewModel, navController as NavHostController)
                     }
-    //        composable("drawingScreen/{drawingId}") { backStackEntry ->
-    //            val drawingId = backStackEntry.arguments?.getString("drawingId") // Get the drawingId from arguments
-    //            DrawCanvas(vm, drawingId)
-    //        }
                 }
             }
         }
-
-
-//        // Add Submit contact information fragment to fragment on Main Activity
-//        supportFragmentManager.commit {
-//            replace<DrawViewFragment>(R.id.main_screen)
-//        }
-//
-//        // Here because fragments
-//        setContentView(binding.root)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -92,31 +70,5 @@ class MainActivity : AppCompatActivity() {
             Log.d("OrientationChange", "Orientation changed to Portrait")
             myViewModel.onScreenOrientationChanged(isPort = true, width = newConfig.screenWidthDp, height = newConfig.screenHeightDp)
         }
-
-        // Perform any additional logic here, such as calling your ViewModel
     }
-
 }
-
-//@Composable
-//fun MyApp(vm: DrawViewModel) {
-//    navController = rememberNavController() // Remember the NavController
-//
-//    // Define the navigation graph
-//    NavHost(navController = navController, startDestination = "drawingList") {
-//        composable("drawingList") { DrawViewListScreen() }
-//        composable("drawingScreen") { backStackEntry ->
-//            DrawCanvas(vm, navController)
-//        }
-//        composable("drawingScreen/{drawingId}") { backStackEntry ->
-//            val drawingId = backStackEntry.arguments?.getString("drawingId") // Get the drawingId from arguments
-//            DrawCanvas(vm, drawingId)
-//        }
-//    }
-
-//    // Define the navigation graph
-//    NavHost(navController = navController, startDestination = "drawingScreen") {
-//        composable("drawingScreen") { DrawViewScreen(vm) }
-//    }
-
-//}

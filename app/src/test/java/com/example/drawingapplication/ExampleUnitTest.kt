@@ -1,14 +1,16 @@
 package com.example.drawingapplication
 
-import org.junit.Test
 //import androidx.test.ext.junit.runners.AndroidJunit4
 //import io.mockk.every
 //import io.mockk.mockk
 //import io.mockk.verify
 //import org.junit.Before
 //import org.junit.Rule
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
 //import org.mockito.Mockito.mock
+
 
 /**
  * Example local unit test, which will execute on the development machine (host).
