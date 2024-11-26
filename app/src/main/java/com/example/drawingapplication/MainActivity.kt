@@ -1,6 +1,7 @@
 package com.example.drawingapplication
 
 import DrawCanvas
+import LoginScreen
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -48,7 +49,8 @@ class MainActivity : AppCompatActivity() {
                 navController = rememberNavController()
 
                 // Define the navigation graph
-                NavHost(navController = navController as NavHostController, startDestination = "drawingList") {
+                NavHost(navController = navController as NavHostController, startDestination = "login") {
+                    composable("login") { LoginScreen() }
                     composable("drawingList") { DrawViewListScreen() }
                     composable("drawingScreen") { backStackEntry ->
                         DrawCanvas(myViewModel, navController as NavHostController)
