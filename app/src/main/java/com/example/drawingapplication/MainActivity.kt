@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                 NavHost(navController = navController as NavHostController, startDestination = "login") {
                     composable("login") { LoginScreen() }
                     composable("drawingList") { DrawViewListScreen() }
+                    composable("sharing") { SharingScreen() }
                     composable("drawingScreen") { backStackEntry ->
                         DrawCanvas(myViewModel, navController as NavHostController)
                     }

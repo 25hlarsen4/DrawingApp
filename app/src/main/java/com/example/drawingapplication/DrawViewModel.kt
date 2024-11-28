@@ -19,6 +19,9 @@ import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.runtime.toMutableStateList
 import androidx.navigation.NavController
+import com.google.firebase.storage.StorageReference
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
@@ -216,6 +219,22 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
         }
     }
 
+    //returns whether the upload was successful
+    fun uploadData(ref: StorageReference, path: String, data: ByteArray): Boolean {
+        val fileRef = ref.child(path)
+
+            val uploadTask = fileRef.putBytes(data)
+            uploadTask
+                .addOnFailureListener { e ->
+                    Log.e("PICUPLOAD", "Failed !$e")
+
+                }
+                .addOnSuccessListener {
+                    Log.d("PICUPLOAD", "success")
+
+                }
+        return true
+    }
 
 }
 

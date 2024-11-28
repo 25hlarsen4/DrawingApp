@@ -96,6 +96,9 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation(libs.core.ktx)
     implementation(libs.androidx.navigation.testing)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.androidx.ui.test.junit4.android)
     ksp("androidx.room:room-compiler:2.6.1")
 

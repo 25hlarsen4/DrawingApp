@@ -30,6 +30,9 @@ uiDesktop = "1.7.0"
 mockito = "5.4.0"
 navigationTesting = "2.8.4"
 uiTestJunit4Android = "1.7.2"
+firebaseStorageKtx = "21.0.1"
+cameraCore = "1.4.0"
+firebaseFirestoreKtx = "25.1.1"
 
 
 
@@ -69,6 +72,9 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 androidx-ui-desktop = { group = "androidx.compose.ui", name = "ui-desktop", version.ref = "uiDesktop" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTesting" }
 androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 
 
