@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -30,17 +31,18 @@ fun DrawViewListScreen(
     Column(modifier = modifier.fillMaxSize()) {
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
                 onClick = {
+                    drawViewListViewModel.export = false
                     navController.navigate("sharing")
                 },
                 // Make button fill available space
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Import")
+                Text("Download Image")
             }
 
             // Space between buttons
@@ -48,12 +50,13 @@ fun DrawViewListScreen(
 
             Button(
                 onClick = {
+                    drawViewListViewModel.export = true
                     navController.navigate("sharing")
                 },
                 // Make button fill available space
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Export")
+                Text("Share")
             }
         }
         Button(
@@ -69,7 +72,7 @@ fun DrawViewListScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp)
         ) {
             Text(text = "Create a New Drawing")
         }

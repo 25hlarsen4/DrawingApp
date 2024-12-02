@@ -89,6 +89,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.runtime.livedata)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
 
     // Room Database
     implementation("androidx.room:room-runtime:2.6.1")

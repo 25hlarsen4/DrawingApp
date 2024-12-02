@@ -59,6 +59,7 @@ import java.util.Date
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.random.Random
+import com.example.drawingapplication.SharePopup
 
 @Composable
 fun SharingScreen(
@@ -66,13 +67,23 @@ fun SharingScreen(
 ) {
     val context = LocalContext.current
     val navController = (context as MainActivity).navController
+    val SharingFragment = SharePopup()
 
     val drawViewListViewModel: DrawViewModel = (context as MainActivity).myViewModel
+    var fileList2 by remember { mutableStateOf<List<DrawViewObject>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        // The suspend function call for downloading images
+        drawViewListViewModel.downloadAllImages(FirebaseStorage.getInstance().reference, "") { fileList ->
+            // Set the result to fileList2 once the download is complete
+            fileList2 = fileList
+        }
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
-
         Button(
             onClick = {
+                drawViewListViewModel.loadFiles(context)
                 navController.navigate("drawingList")
             },
             modifier = Modifier
@@ -82,69 +93,47 @@ fun SharingScreen(
             Text(text = "Back")
         }
 
+        if (drawViewListViewModel.export) {
+            // DrawViewList below the button
+            DrawViewList(
+                //change list to hold everything inside of fire database that isn't the users so
+                // they can "share" just keep list if export is clicked
 
-        // DrawViewList below the button
-        DrawViewList(
-            //change list to hold everything inside of fire database that isn't the users so
-            // they can "share" just keep list if export is clicked
-            list = drawViewListViewModel.DrawViewObjects,
-            onSelectedTask = { drawViewObject ->
-                //change behavior depending on which button was selected
-                val baos = ByteArrayOutputStream()
-                var bitmap = drawViewObject.bitmap
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0, baos)
-                drawViewListViewModel.uploadData(Firebase.storage.reference, drawViewObject.fileName, baos.toByteArray())
-                navController.navigate("drawingList")
-            },
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
+                list = drawViewListViewModel.DrawViewObjects,
+                onSelectedTask = { drawViewObject ->
+                    //change behavior depending on which button was selected
+                    val baos = ByteArrayOutputStream()
+                    var bitmap = drawViewObject.bitmap
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, baos)
+                    drawViewListViewModel.uploadData(
+                        Firebase.storage.reference,
+                        drawViewObject.fileName,
+                        baos.toByteArray()
+                    )
+                    SharingFragment.show((context as FragmentActivity).supportFragmentManager, "SharingFragment")
+                    navController.navigate("drawingList")
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
+        else {
+            DrawViewList(
+                //change list to hold everything inside of fire database that isn't the users so
+                // they can "share" just keep list if export is clicked
 
-suspend fun downladImage(ref: StorageReference, path: String): Bitmap? {
-    val fileRef = ref.child(path)
-    return suspendCoroutine {
-        fileRef.getBytes(10 * 1024 * 1024).addOnSuccessListener { bytes ->
-            it.resume(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
-        }.addOnFailureListener { e ->
-            Log.e("DOWNLOAD_IMAGE", "Failed to get image $e")
-            it.resume(null)
+                list = fileList2,
+                onSelectedTask = { drawViewObject ->
+                    //change behavior depending on which button was selected
+
+                    drawViewListViewModel.select(drawViewObject)
+                    drawViewListViewModel.filename = ""
+                    val saveFragment = SaveFragment()
+                    saveFragment.show((context as FragmentActivity).supportFragmentManager, "SaveFragment")
+                },
+                modifier = Modifier.weight(1f)
+            )
+            Log.d("DownloadAllImages", "Downloaded ${fileList2.size} images.")
         }
     }
 }
-
-suspend fun downloadDocument(db: FirebaseFirestore): String {
-    //probably bad to do this in a composable
-    //grab a document from a public folder on firebase
-    val collection = db.collection("demoCollection")
-    return suspendCoroutine {
-        collection
-            .get()
-            .addOnSuccessListener { result ->
-                val doc = result.first()
-                it.resume("${doc.id} => ${doc.data}")
-            }
-            .addOnFailureListener { exception ->
-                Log.w("Uh oh", "Error getting documents.", exception)
-                it.resume("No data")
-            }
-    }
-}
-
-suspend fun uploadDocument(id: String, document: Any) {
-    val db = Firebase.firestore
-    suspendCoroutine { continuation ->
-        db.collection("users/").document(id)
-            .set(document)
-            .addOnSuccessListener {
-                Log.e("UPLOAD", "SUCCESSFUL!")
-                continuation.resume(Unit)
-            }
-            .addOnFailureListener {
-                    e -> Log.e("UPLOAD", "FAILED!: $e")
-                continuation.resume(Unit)
-            }
-    }
-}
-
 
