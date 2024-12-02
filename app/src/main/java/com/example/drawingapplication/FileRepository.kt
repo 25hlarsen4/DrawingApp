@@ -15,6 +15,11 @@ open class FileRepository(private val scope: CoroutineScope,
     //updated with the DB is modified
     open val allFiles = dao.allFiles().asLiveData()
 
+    fun getFiles(): List<FileData> {
+        val files = allFiles.value
+        return files ?: emptyList()
+    }
+
     open fun addFile(filename: String){
         scope.launch {
             val file = FileData(filename, Date())

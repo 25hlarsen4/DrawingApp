@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.example.drawingapplication"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -109,11 +109,11 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    testImplementation("org.mockito:mockito-core:5.5.0")
+    testImplementation("org.mockito:mockito-core:4.8.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0")
     androidTestImplementation("androidx.compose.ui:ui-test-manifest:1.0.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-    testImplementation("org.mockito:mockito-android:5.5.0")
+    testImplementation("org.mockito:mockito-android:4.8.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -124,9 +124,9 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
     testImplementation("org.powermock:powermock-module-junit4:2.0.0")
-    testImplementation("org.mockito:mockito-core:3.11.2")
     testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-inline:4.9.0")
 
 
     // Debugging
@@ -148,6 +148,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.0.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.3.0")
+    testImplementation("org.robolectric:robolectric:4.9")
+    implementation("androidx.compose.ui:ui-tooling:1.5.0")
+    implementation("androidx.compose.ui:ui:1.5.0")
 
 }
 
