@@ -64,8 +64,8 @@ class MainActivity : AppCompatActivity() {
                 // Define the navigation graph
                 NavHost(navController = navController as NavHostController, startDestination = "login") {
                     composable("login") { LoginScreen() }
-                    composable("drawingList") { DrawViewListScreen() }
-                    composable("sharing") { SharingScreen() }
+                    composable("drawingList") { DrawViewListScreen(drawViewListViewModel = myViewModel) }
+                    composable("sharing") { SharingScreen(drawViewListViewModel = myViewModel) }
                     composable("drawingScreen") { backStackEntry ->
                         DrawCanvas(myViewModel, navController as NavHostController)
                     }

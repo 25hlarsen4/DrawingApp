@@ -64,12 +64,12 @@ import com.example.drawingapplication.SharePopup
 @Composable
 fun SharingScreen(
     modifier: Modifier = Modifier,
+    drawViewListViewModel: DrawViewModel
 ) {
     val context = LocalContext.current.findActivity()
     val navController = (context as MainActivity).navController
     val SharingFragment = SharePopup()
 
-    val drawViewListViewModel: DrawViewModel = (context as MainActivity).myViewModel
     var fileList2 by remember { mutableStateOf<List<DrawViewObject>>(emptyList()) }
 
     LaunchedEffect(Unit) {

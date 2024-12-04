@@ -23,12 +23,12 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun DrawViewListScreen(
     modifier: Modifier = Modifier,
+    drawViewListViewModel: DrawViewModel
 ) {
 
     val context = LocalContext.current.findActivity()
     val navController = rememberNavController()
 
-    val drawViewListViewModel: DrawViewModel = (context as MainActivity).myViewModel
     // composeView demo
     Column(modifier = modifier.fillMaxSize()) {
 
