@@ -65,7 +65,7 @@ import com.example.drawingapplication.SharePopup
 fun SharingScreen(
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
+    val context = LocalContext.current.findActivity()
     val navController = (context as MainActivity).navController
     val SharingFragment = SharePopup()
 

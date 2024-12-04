@@ -2,6 +2,8 @@ package com.example.drawingapplication
 
 import DrawCanvas
 import LoginScreen
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -19,8 +21,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import android.content.res.Configuration
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+
+internal fun Context.findActivity(): ComponentActivity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is ComponentActivity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("Permissions should be called in the context of an Activity")
+}
+
 
 // Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {

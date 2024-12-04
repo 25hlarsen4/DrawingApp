@@ -24,10 +24,10 @@ android {
     }
     testOptions {
         unitTests {
-            // To configure JVM args for unit tests
             isIncludeAndroidResources = true
         }
     }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -38,11 +38,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -62,6 +62,7 @@ android {
     }
 
 
+
 }
 
 dependencies {
@@ -79,8 +80,8 @@ dependencies {
     implementation(libs.yukuku.ambilwarna)
 
     // Activity & Compose
-    implementation("androidx.activity:activity-compose:1.9.2") // Use consistent version
-    implementation(platform(libs.androidx.compose.bom)) // Ensure Compose version consistency
+    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation(platform(libs.androidx.compose.bom))
     implementation("androidx.compose.ui:ui:1.7.2")
     implementation("androidx.compose.ui:ui-graphics:1.7.2")
     implementation("androidx.compose.material3:material3:1.3.0")
@@ -109,24 +110,28 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    testImplementation("org.mockito:mockito-core:4.8.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0")
+    testImplementation("org.mockito:mockito-core:4.4.0")
     androidTestImplementation("androidx.compose.ui:ui-test-manifest:1.0.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-    testImplementation("org.mockito:mockito-android:4.8.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation(libs.mockito.kotlin.v500)
+    testImplementation(libs.mockito.android)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit.v121)
+    androidTestImplementation(libs.androidx.espresso.core.v361)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:<compose-version>")
-    androidTestImplementation("androidx.compose.ui:ui-test-manifest:<compose-version>")
-    testImplementation("org.powermock:powermock-module-junit4:2.0.9")
-    ksp("com.google.devtools.ksp:symbol-processing-api:1.9.10-1.0.13")
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
-    testImplementation("org.powermock:powermock-module-junit4:2.0.0")
-    testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-inline:4.9.0")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:<compose-version>")
+    testImplementation(libs.powermock.powermock.module.junit4)
+    ksp(libs.symbol.processing.api)
+    implementation(libs.androidx.core.ktx.v1120)
+    implementation(libs.kotlin.stdlib)
+    testImplementation(libs.powermock.powermock.module.junit4)
+    testImplementation(libs.powermock.api.mockito2)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.inline)
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.15.4")
+    testImplementation("org.mockito:mockito-core:3.7.7")
+    testImplementation("org.powermock:powermock-core:1.7.4")
+    testImplementation("org.powermock:powermock-module-testng:1.7.4")
+    testImplementation("org.powermock:powermock-api-mockito2:1.7.4")
 
 
     // Debugging
@@ -134,26 +139,25 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Test Libraries
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation(libs.androidx.junit.v113)
+    androidTestImplementation(libs.androidx.espresso.core.v361)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.rules)
 
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-analytics")
 
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("androidx.compose.ui:ui:1.0.0")
-    implementation("androidx.compose.material:material:1.0.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation("androidx.activity:activity-compose:1.3.0")
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.androidx.ui.v100)
+    implementation(libs.androidx.material)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v231)
+    implementation(libs.androidx.activity.compose.v130)
     testImplementation("org.robolectric:robolectric:4.9")
-    implementation("androidx.compose.ui:ui-tooling:1.5.0")
-    implementation("androidx.compose.ui:ui:1.5.0")
+    implementation(libs.ui.tooling)
+    implementation(libs.androidx.compose.ui.ui2)
 
 }
-
 //dependencies {
 //    implementation(libs.androidx.navigation.compose)
 //    androidTestImplementation(libs.androidx.core)

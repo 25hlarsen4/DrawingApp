@@ -6,11 +6,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.drawingapplication.MainActivity
+import com.example.drawingapplication.findActivity
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun LoginScreen() {
-    val context = LocalContext.current
+    val context = LocalContext.current.findActivity()
     val navController = (context as MainActivity).navController
 
     val auth = FirebaseAuth.getInstance()

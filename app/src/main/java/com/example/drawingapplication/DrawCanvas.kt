@@ -24,6 +24,7 @@ import com.example.drawingapplication.DrawViewModel
 import com.example.drawingapplication.PenShapeFragment
 import com.example.drawingapplication.PenSizeFragment
 import com.example.drawingapplication.SaveFragment
+import com.example.drawingapplication.findActivity
 import yuku.ambilwarna.AmbilWarnaDialog
 
 
@@ -35,7 +36,7 @@ fun DrawCanvas(myViewModel: DrawViewModel, navController: NavHostController, mod
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     val bitmap by myViewModel.bitmap.observeAsState(initial = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888))
-    val context = LocalContext.current
+    val context = LocalContext.current.findActivity()
     val displayMetrics = context.resources.displayMetrics
     val screenWidth = displayMetrics.widthPixels
     val density = context.resources.displayMetrics.density
