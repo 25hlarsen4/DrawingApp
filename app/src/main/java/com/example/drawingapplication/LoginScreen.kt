@@ -5,14 +5,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.drawingapplication.MainActivity
 import com.example.drawingapplication.findActivity
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavHostController) {
     val context = LocalContext.current.findActivity()
-    val navController = (context as MainActivity).navController
 
     val auth = FirebaseAuth.getInstance()
 

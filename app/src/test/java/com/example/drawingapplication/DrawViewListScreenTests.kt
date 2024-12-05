@@ -1,49 +1,33 @@
 package com.example.drawingapplication
 
-import android.app.Application
 import android.content.Context
 import android.os.Build
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.navigation.NavHostController
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Class
-import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.storage
-import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
-import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest
-import org.powermock.modules.junit4.PowerMockRunner
-import org.powermock.modules.junit4.PowerMockRunnerDelegate
-import org.robolectric.Robolectric
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.util.Date
 
 @Config(sdk = [Build.VERSION_CODES.P])
 @RunWith(AndroidJUnit4::class)
-class UnitTests {
+class DrawViewListScreenTests {
 
     @get:Rule
     val composeTestRule = createComposeRule()
-      private lateinit var activity: MainActivity
 
       private lateinit var repository: FileRepository
       private lateinit var viewModel: DrawViewModel
@@ -51,6 +35,7 @@ class UnitTests {
       private lateinit var mockAuth: FirebaseAuth
       private lateinit var db: FileDatabase
       private lateinit var dao: FileDAO
+      private lateinit var navController: NavHostController
     @Before
     fun setup() {
         FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
@@ -64,20 +49,29 @@ class UnitTests {
         repository = FileRepository(CoroutineScope(SupervisorJob() + Dispatchers.IO), dao)
 
         viewModel = DrawViewModel(repository, context)
+        navController = NavHostController(context)
 
     }
 
     @Test
-    fun testCreateNewDrawingButtonExists() {
+    fun testViewListScreenStructure() {
 
         // Set up the Compose content for testing
         composeTestRule.setContent {
-            DrawViewListScreen(drawViewListViewModel = viewModel)
+            DrawViewListScreen(drawViewListViewModel = viewModel, navController = navController)
         }
 
         // Check if the button with the text "Create a new drawing" exists
         composeTestRule
-            .onNodeWithText("Download Image") // Find the button by text
-            .assertIsDisplayed() // Ensure it is visible on the screen
+            .onNodeWithText("Download Image")
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText("Share")
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText("Create a New Drawing")
+            .assertIsDisplayed()
     }
 }

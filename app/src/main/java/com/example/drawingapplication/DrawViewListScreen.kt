@@ -18,16 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun DrawViewListScreen(
     modifier: Modifier = Modifier,
-    drawViewListViewModel: DrawViewModel
+    drawViewListViewModel: DrawViewModel,
+    navController: NavHostController
 ) {
 
     val context = LocalContext.current.findActivity()
-    val navController = rememberNavController()
 
     // composeView demo
     Column(modifier = modifier.fillMaxSize()) {

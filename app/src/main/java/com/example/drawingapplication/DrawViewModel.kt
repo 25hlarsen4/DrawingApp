@@ -26,7 +26,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 
-private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
+private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "", Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888) )}
 
 class DrawViewModel(private val repository: FileRepository, context: Context) : ViewModel() {
     private val _bitmap = MutableLiveData<Bitmap>()

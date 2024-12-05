@@ -22,6 +22,8 @@ import androidx.navigation.compose.rememberNavController
 import android.content.res.Configuration
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
@@ -63,12 +65,12 @@ class MainActivity : AppCompatActivity() {
 
                 // Define the navigation graph
                 NavHost(navController = navController as NavHostController, startDestination = "login") {
-                    composable("login") { LoginScreen() }
-                    composable("drawingList") { DrawViewListScreen(drawViewListViewModel = myViewModel) }
-                    composable("sharing") { SharingScreen(drawViewListViewModel = myViewModel) }
-                    composable("drawingScreen") { backStackEntry ->
-                        DrawCanvas(myViewModel, navController as NavHostController)
-                    }
+                    composable("login") { LoginScreen(navController = navController as NavHostController) }
+                    composable("drawingList") { DrawViewListScreen(drawViewListViewModel = myViewModel, navController = navController as NavHostController) }
+                    composable("sharing") { SharingScreen(drawViewListViewModel = myViewModel, navController = navController as NavHostController) }
+                    composable("drawingScreen") { DrawCanvas(myViewModel,
+                        navController as NavHostController
+                    ) }
                 }
             }
         }
@@ -76,7 +78,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Log.d("hello", "helloooooooo")
 
         // Check if the orientation has changed
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {

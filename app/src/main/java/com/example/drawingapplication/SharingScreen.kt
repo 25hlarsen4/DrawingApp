@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHostController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -64,10 +65,10 @@ import com.example.drawingapplication.SharePopup
 @Composable
 fun SharingScreen(
     modifier: Modifier = Modifier,
-    drawViewListViewModel: DrawViewModel
+    drawViewListViewModel: DrawViewModel,
+    navController: NavHostController
 ) {
     val context = LocalContext.current.findActivity()
-    val navController = (context as MainActivity).navController
     val SharingFragment = SharePopup()
 
     var fileList2 by remember { mutableStateOf<List<DrawViewObject>>(emptyList()) }
