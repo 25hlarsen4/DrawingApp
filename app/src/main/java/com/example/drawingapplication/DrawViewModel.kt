@@ -3,27 +3,17 @@ package com.example.drawingapplication
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Matrix
 import android.graphics.Paint
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import android.os.Environment
-import androidx.compose.runtime.Composable
 import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.runtime.toMutableStateList
-import androidx.navigation.NavController
 import com.google.firebase.storage.StorageReference
-import kotlinx.coroutines.tasks.await
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "", Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888) )}
@@ -48,17 +38,9 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
     var shape = false
     var filename = ""
 
-    // Screen Dimensions
     var screenWidth = 1200
-    var screenHeight = 2400
-
-    // First run
-    var first = true
-    var isPortrait = true
-    var change = false
 
     val allFiles: LiveData<List<FileData>> = repository.allFiles
-
 
     var export = false
 
@@ -107,27 +89,6 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
         _bitmap.value = currentBitmap
     }
 
-    fun onScreenOrientationChanged(isPort: Boolean, width: Int, height: Int) {
-        if (isPortrait != isPort) {
-            isPortrait = isPort
-            changeScreenDimensions(width, height)
-        }
-    }
-
-    fun changeScreenDimensions(width: Int, height: Int){
-        if (width <= 0 || height <= 0)
-            return
-        screenWidth = width
-        screenHeight = height
-
-        var m = Matrix()
-        m.postRotate(0f)
-
-        val currentBitmap = bitmap.value!!
-        var scaledBitmap =  Bitmap.createScaledBitmap(currentBitmap, screenWidth, screenHeight, false)
-        _bitmap.value  = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), m, true)
-    }
-
     fun updatePenSize(newSize: Int) {
         strokeSize = newSize
     }
@@ -151,21 +112,6 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
     fun addFile(fileName: String){
         Log.e("VM", "adding file $fileName")
         repository.addFile(fileName)
-    }
-
-    fun doesFileExist(): Boolean {
-        var fileExists = false
-        for (fileData in allFiles.value!!)
-        {
-            Log.d("SaveFileCheck", fileData.filename)
-            if (fileData.filename == this.filename)
-            {
-                Log.d("SaveFileCheckFileExists", fileData.filename)
-                fileExists = true
-                break
-            }
-        }
-        return fileExists
     }
 
     fun loadFiles(context: Context) {
@@ -273,47 +219,6 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
             }
     }
 
-//    fun downloadImage(ref: StorageReference, path: String): Bitmap {
-//        val fileRef = ref.child(path)
-//        var bitmaplocal: Bitmap? = null
-//        fileRef.getBytes(10 * 1024 * 1024)  // Max 10 MB
-//            .addOnSuccessListener { bytes ->
-//                bitmaplocal = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e("DOWNLOAD_IMAGE", "Failed to get image: $exception")
-//            }
-//        return bitmaplocal!!
-//    }
-
-//    fun downloadAllImages(ref: StorageReference, directoryPath: String): MutableList<DrawViewObject> {
-//        val fileList: MutableList<DrawViewObject> = mutableListOf()
-//        ref.listAll()
-//            .addOnSuccessListener { result ->
-//                var count = 0
-//                for (item in result.items) {
-//                    downloadImage(ref, item.path) { bitmap ->
-//                        if (bitmap != null) {
-//                            Log.e("ASDFGHJKL", item.path)
-//                            fileList.add(DrawViewObject(count, item.path, Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) ))
-//                            count += 1
-//                            Log.e("ASDFGHJKL", item.path)
-//                            Log.e("ASDFGHJKL", fileList.size.toString())
-//                        } else {
-//                            // Handle the failure case
-//                            Log.e("DownloadImage", "Failed to download image")
-//                        }
-//                    }
-//                    Log.e("ASDFGHJKL123", fileList.size.toString())
-//
-//                }
-//
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e("ASDFGHJ", "Failed to list files: $exception")
-//            }
-//        return fileList
-//    }
 fun downloadAllImages(ref: StorageReference, directoryPath: String, callback: (MutableList<DrawViewObject>) -> Unit) {
     val fileList: MutableList<DrawViewObject> = mutableListOf()
 

@@ -37,7 +37,6 @@ internal fun Context.findActivity(): ComponentActivity {
 }
 
 
-// Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {
     val binding: ActivityMainActualBinding by lazy {ActivityMainActualBinding.inflate(layoutInflater)}
     val myViewModel: DrawViewModel by viewModels{
@@ -73,19 +72,6 @@ class MainActivity : AppCompatActivity() {
                     ) }
                 }
             }
-        }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
-        // Check if the orientation has changed
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Log.d("OrientationChange", "Orientation changed to Landscape")
-            myViewModel.onScreenOrientationChanged(isPort = false, width = newConfig.screenWidthDp, height = newConfig.screenHeightDp)
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Log.d("OrientationChange", "Orientation changed to Portrait")
-            myViewModel.onScreenOrientationChanged(isPort = true, width = newConfig.screenWidthDp, height = newConfig.screenHeightDp)
         }
     }
 }

@@ -30,11 +30,6 @@ import yuku.ambilwarna.AmbilWarnaDialog
 
 @Composable
 fun DrawCanvas(myViewModel: DrawViewModel, navController: NavHostController, modifier: Modifier = Modifier) {
-    Log.d("DrawCanvas", "Recomposing DrawCanvas")
-
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
     val bitmap by myViewModel.bitmap.observeAsState(initial = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888))
     val context = LocalContext.current.findActivity()
     val displayMetrics = context.resources.displayMetrics
@@ -45,14 +40,6 @@ fun DrawCanvas(myViewModel: DrawViewModel, navController: NavHostController, mod
             .fillMaxSize()
             .background(Color.Gray)
     ) {
-        if (isLandscape) {
-            println("Orientation changed: ${if (isLandscape) "Landscape" else "Portrait"}")
-            myViewModel.onScreenOrientationChanged(isPort = false, width = configuration.screenWidthDp, height = configuration.screenHeightDp)
-        } else {
-            println("Orientation changed: ${if (isLandscape) "Landscape" else "Portrait"}")
-            myViewModel.onScreenOrientationChanged(isPort = true, width = configuration.screenWidthDp, height = configuration.screenHeightDp)
-        }
-        Log.d("screenWidth",  screenWidth.toString())
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()

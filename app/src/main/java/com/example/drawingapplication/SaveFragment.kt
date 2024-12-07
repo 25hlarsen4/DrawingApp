@@ -48,7 +48,5 @@ class SaveFragment : DialogFragment() {
 
         return binding.root
     }
-    fun setText(param: String) {
-        binding.saveText.text = param
-    }
+
 }
