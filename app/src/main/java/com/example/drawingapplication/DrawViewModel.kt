@@ -15,13 +15,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import android.os.Environment
+import androidx.compose.runtime.Composable
 import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.runtime.toMutableStateList
 import androidx.navigation.NavController
+import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
-private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "hi.txt", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) )}
+private fun getDrawViewObjects() = List(0) {i -> DrawViewObject(i, "", Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888) )}
 
 class DrawViewModel(private val repository: FileRepository, context: Context) : ViewModel() {
     private val _bitmap = MutableLiveData<Bitmap>()
@@ -53,6 +58,9 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
     var change = false
 
     val allFiles: LiveData<List<FileData>> = repository.allFiles
+
+
+    var export = false
 
     init {
         _bitmap.value = Bitmap.createBitmap(screenWidth, screenWidth, Bitmap.Config.ARGB_8888)
@@ -145,6 +153,21 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
         repository.addFile(fileName)
     }
 
+    fun doesFileExist(): Boolean {
+        var fileExists = false
+        for (fileData in allFiles.value!!)
+        {
+            Log.d("SaveFileCheck", fileData.filename)
+            if (fileData.filename == this.filename)
+            {
+                Log.d("SaveFileCheckFileExists", fileData.filename)
+                fileExists = true
+                break
+            }
+        }
+        return fileExists
+    }
+
     fun loadFiles(context: Context) {
         Log.d("Files", _DrawViewObjects.toString())
         _DrawViewObjects.clear()
@@ -174,6 +197,7 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
             Log.d("SaveFileCheck", fileData.filename)
             if (fileData.filename == this.filename)
             {
+                Log.d("SaveFileCheckFileExists", fileData.filename)
                 fileExists = true
                 break
             }
@@ -216,6 +240,114 @@ class DrawViewModel(private val repository: FileRepository, context: Context) : 
         }
     }
 
+    //returns whether the upload was successful
+    fun uploadData(ref: StorageReference, path: String, data: ByteArray): Boolean {
+        val fileRef = ref.child(path)
+
+            val uploadTask = fileRef.putBytes(data)
+            uploadTask
+                .addOnFailureListener { e ->
+                    Log.e("PICUPLOAD", "Failed !$e")
+
+                }
+                .addOnSuccessListener {
+                    Log.d("PICUPLOAD", "success")
+
+                }
+        return true
+    }
+
+    fun downloadImage(ref: StorageReference, path: String, callback: (Bitmap?) -> Unit) {
+        val fileRef = ref.child(path)
+
+        // Perform the download operation
+        fileRef.getBytes(10 * 1024 * 1024)  // Max 10 MB
+            .addOnSuccessListener { bytes ->
+                // Decode the byte array into a Bitmap
+                val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                callback(bitmap)  // Pass the bitmap to the callback
+            }
+            .addOnFailureListener { exception ->
+                Log.e("DOWNLOAD_IMAGE", "Failed to get image: $exception")
+                callback(null)  // Call callback with null if failed
+            }
+    }
+
+//    fun downloadImage(ref: StorageReference, path: String): Bitmap {
+//        val fileRef = ref.child(path)
+//        var bitmaplocal: Bitmap? = null
+//        fileRef.getBytes(10 * 1024 * 1024)  // Max 10 MB
+//            .addOnSuccessListener { bytes ->
+//                bitmaplocal = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.e("DOWNLOAD_IMAGE", "Failed to get image: $exception")
+//            }
+//        return bitmaplocal!!
+//    }
+
+//    fun downloadAllImages(ref: StorageReference, directoryPath: String): MutableList<DrawViewObject> {
+//        val fileList: MutableList<DrawViewObject> = mutableListOf()
+//        ref.listAll()
+//            .addOnSuccessListener { result ->
+//                var count = 0
+//                for (item in result.items) {
+//                    downloadImage(ref, item.path) { bitmap ->
+//                        if (bitmap != null) {
+//                            Log.e("ASDFGHJKL", item.path)
+//                            fileList.add(DrawViewObject(count, item.path, Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) ))
+//                            count += 1
+//                            Log.e("ASDFGHJKL", item.path)
+//                            Log.e("ASDFGHJKL", fileList.size.toString())
+//                        } else {
+//                            // Handle the failure case
+//                            Log.e("DownloadImage", "Failed to download image")
+//                        }
+//                    }
+//                    Log.e("ASDFGHJKL123", fileList.size.toString())
+//
+//                }
+//
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.e("ASDFGHJ", "Failed to list files: $exception")
+//            }
+//        return fileList
+//    }
+fun downloadAllImages(ref: StorageReference, directoryPath: String, callback: (MutableList<DrawViewObject>) -> Unit) {
+    val fileList: MutableList<DrawViewObject> = mutableListOf()
+
+    // List all the items in the directory
+    ref.listAll()
+        .addOnSuccessListener { result ->
+            var count = 0
+            val totalItems = result.items.size
+            var downloadedCount = 0
+
+            // Loop through each item and download the image
+            for (item in result.items) {
+                downloadImage(ref, item.path) { bitmap ->
+                    if (bitmap != null) {
+                        // Add the image to the list
+                        val filenam = item.path.replace("/", "")
+                        fileList.add(DrawViewObject(count, filenam, bitmap))
+                        count += 1
+                    } else {
+                        Log.e("DownloadImage", "Failed to download image")
+                    }
+
+                    // Once all images are downloaded, call the callback with the fileList
+                    downloadedCount += 1
+                    if (downloadedCount == totalItems) {
+                        callback(fileList)
+                    }
+                }
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.e("DownloadError", "Failed to list files: $exception")
+        }
+}
 
 }
 

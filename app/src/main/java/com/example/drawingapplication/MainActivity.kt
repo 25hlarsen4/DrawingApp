@@ -1,6 +1,9 @@
 package com.example.drawingapplication
 
 import DrawCanvas
+import LoginScreen
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -18,8 +21,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import android.content.res.Configuration
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+
+internal fun Context.findActivity(): ComponentActivity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is ComponentActivity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("Permissions should be called in the context of an Activity")
+}
+
 
 // Note to self currently trying to figure how to save files to android/com.exmaple.drawingapplication.files
 class MainActivity : AppCompatActivity() {
@@ -48,11 +64,13 @@ class MainActivity : AppCompatActivity() {
                 navController = rememberNavController()
 
                 // Define the navigation graph
-                NavHost(navController = navController as NavHostController, startDestination = "drawingList") {
-                    composable("drawingList") { DrawViewListScreen() }
-                    composable("drawingScreen") { backStackEntry ->
-                        DrawCanvas(myViewModel, navController as NavHostController)
-                    }
+                NavHost(navController = navController as NavHostController, startDestination = "login") {
+                    composable("login") { LoginScreen(navController = navController as NavHostController) }
+                    composable("drawingList") { DrawViewListScreen(drawViewListViewModel = myViewModel, navController = navController as NavHostController) }
+                    composable("sharing") { SharingScreen(drawViewListViewModel = myViewModel, navController = navController as NavHostController) }
+                    composable("drawingScreen") { DrawCanvas(myViewModel,
+                        navController as NavHostController
+                    ) }
                 }
             }
         }
@@ -60,7 +78,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Log.d("hello", "helloooooooo")
 
         // Check if the orientation has changed
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
